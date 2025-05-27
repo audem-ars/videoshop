@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VideoShop</title>
+  
+  <!-- Google Fonts - YouTube uses Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS file -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Ambient Background -->
+  <div class="ambient-background"></div>
+  
+  <!-- Header -->
+  <header>
+    <div class="hamburger-menu" id="hamburger-menu">
+      <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
+    </div>
+    <a href="/" class="logo">Video<span>Shop</span></a>
+    
+    <div class="search-bar">
+      <input type="text" placeholder="Search">
+      <button>🔍</button>
+    </div>
+    
+    <div class="user-actions">
+      <button id="upload-btn">Upload</button>
+      <a href="#" class="sign-in" onclick="openModal('login-modal')">Sign In</a>
+    </div>
+  </header>
+  
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <a href="/" class="sidebar-item active">
+        <span class="sidebar-icon">🏠</span>
+        <span class="sidebar-text">Home</span>
+      </a>
+      <a href="/trending" class="sidebar-item">
+        <span class="sidebar-icon">🔥</span>
+        <span class="sidebar-text">Trending</span>
+      </a>
+      <a href="/subscriptions" class="sidebar-item">
+        <span class="sidebar-icon">📋</span>
+        <span class="sidebar-text">Subscriptions</span>
+      </a>
+      <a href="/shop" class="sidebar-item">
+        <span class="sidebar-icon">🛒</span>
+        <span class="sidebar-text">Shop</span>
+      </a>
+      <a href="/library" class="sidebar-item">
+        <span class="sidebar-icon">📚</span>
+        <span class="sidebar-text">Library</span>
+      </a>
+      <a href="/history" class="sidebar-item">
+        <span class="sidebar-icon">⏱️</span>
+        <span class="sidebar-text">History</span>
+      </a>
+      <a href="/your-videos" class="sidebar-item">
+        <span class="sidebar-icon">⏯️</span>
+        <span class="sidebar-text">Your Videos</span>
+      </a>
+      <a href="/watch-later" class="sidebar-item">
+        <span class="sidebar-icon">⏰</span>
+        <span class="sidebar-text">Watch Later</span>
+      </a>
+      <a href="/liked-videos" class="sidebar-item">
+        <span class="sidebar-icon">👍</span>
+        <span class="sidebar-text">Liked Videos</span>
+      </a>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Featured Video -->
+      <div class="featured-video">
+        <div class="video-container">
+          <div class="video-placeholder">
+            <!-- Play button will be added by JS -->
+          </div>
+        </div>
+        <div class="video-info">
+          <h2 class="video-title">The Ultimate Guide to Natural Oral Care</h2>
+          <div class="video-stats">
+            <span>245K views</span>
+            <span>2 days ago</span>
+          </div>
+          <div class="video-actions">
+            <button class="video-action-btn">👍 Like</button>
+            <button class="video-action-btn">👎 Dislike</button>
+            <button class="video-action-btn">↗️ Share</button>
+            <button class="video-action-btn">💾 Save</button>
+          </div>
+          <div class="channel-info">
+            <div class="channel-avatar"></div>
+            <div>
+              <div class="channel-name">HealthEssentials</div>
+              <div class="channel-subscribers">1.2M subscribers</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Shop Section -->
+      <div class="shop-section">
+        <div class="shop-header">
+          <h3 class="shop-title">Featured Products</h3>
+          <a href="/shop" class="shop-view-all">View All</a>
+        </div>
+        <div class="product-grid" id="product-grid">
+          <div class="loading-spinner">Loading trending products...</div>
+        </div>
+      </div>
+      
+      <!-- Recommended Videos -->
+      <div class="recommended-videos">
+        <div class="section-header">
+          <h3 class="section-title">Recommended Videos</h3>
+        </div>
+        <div class="video-grid">
+          <div class="video-card">
+            <div class="video-card-thumbnail">
+              <div class="video-card-duration">10:28</div>
+            </div>
+            <div class="video-card-info">
+              <div class="channel-avatar-small"></div>
+              <div class="video-card-details">
+                <h4 class="video-card-title">5 Tips for Healthier Skin in Winter</h4>
+                <div class="video-card-channel">SkinCareGuru</div>
+                <div class="video-card-stats">189K views • 3 weeks ago</div>
+              </div>
+            </div>
+          </div>
+          <div class="video-card">
+            <div class="video-card-thumbnail">
+              <div class="video-card-duration">15:42</div>
+            </div>
+            <div class="video-card-info">
+              <div class="channel-avatar-small"></div>
+              <div class="video-card-details">
+                <h4 class="video-card-title">DIY Natural Hair Treatments</h4>
+                <div class="video-card-channel">OrganicBeauty</div>
+                <div class="video-card-stats">87K views • 5 days ago</div>
+              </div>
+            </div>
+          </div>
+          <div class="video-card">
+            <div class="video-card-thumbnail">
+              <div class="video-card-duration">8:14</div>
+            </div>
+            <div class="video-card-info">
+              <div class="channel-avatar-small"></div>
+              <div class="video-card-details">
+                <h4 class="video-card-title">The Truth About Commercial Toothpastes</h4>
+                <div class="video-card-channel">HealthEssentials</div>
+                <div class="video-card-stats">325K views • 2 months ago</div>
+              </div>
+            </div>
+          </div>
+          <div class="video-card">
+            <div class="video-card-thumbnail">
+              <div class="video-card-duration">12:07</div>
+            </div>
+            <div class="video-card-info">
+              <div class="channel-avatar-small"></div>
+              <div class="video-card-details">
+                <h4 class="video-card-title">Morning Routine for Clearer Skin</h4>
+                <div class="video-card-channel">BeautyScience</div>
+                <div class="video-card-stats">152K views • 1 week ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay"></div>
+  
+  <!-- Login Modal -->
+  <div id="login-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Sign In</h3>
+        <button class="close-modal" onclick="closeModal('login-modal')">×</button>
+      </div>
+      <form class="modal-form" id="login-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required>
+        </div>
+        <button type="submit" class="form-submit">Sign In</button>
+        <div class="form-switch">
+          Don't have an account? <a href="#" onclick="switchModal('login-modal', 'signup-modal')">Sign Up</a>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Signup Modal -->
+  <div id="signup-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Create Account</h3>
+        <button class="close-modal" onclick="closeModal('signup-modal')">×</button>
+      </div>
+      <form class="modal-form" id="signup-form">
+        <div class="form-group">
+          <label for="signup-name">Full Name</label>
+          <input type="text" id="signup-name" required>
+        </div>
+        <div class="form-group">
+          <label for="signup-email">Email</label>
+          <input type="email" id="signup-email" required>
+        </div>
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label for="signup-confirm">Confirm Password</label>
+          <input type="password" id="signup-confirm" required minlength="6">
+        </div>
+        <button type="submit" class="form-submit">Create Account</button>
+        <div class="form-switch">
+          Already have an account? <a href="#" onclick="switchModal('signup-modal', 'login-modal')">Sign In</a>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Upload Modal -->
+  <div id="upload-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Upload Video</h3>
+        <button class="close-modal" onclick="closeModal('upload-modal')">×</button>
+      </div>
+      <form class="modal-form" id="upload-form">
+        <div class="form-group">
+          <label for="video-title">Title</label>
+          <input type="text" id="video-title" required>
+        </div>
+        <div class="form-group">
+          <label for="video-description">Description</label>
+          <textarea id="video-description" rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="video-file">Video File</label>
+          <input type="file" id="video-file" accept="video/*" required>
+        </div>
+        <div class="form-group">
+          <label for="thumbnail-file">Thumbnail</label>
+          <input type="file" id="thumbnail-file" accept="image/*" required>
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="video-publish" checked> Publish immediately
+          </label>
+        </div>
+        <button type="submit" class="form-submit">Upload</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PRODUCT MODAL - NEW! -->
+  <div id="product-modal" class="modal">
+    <div class="modal-content product-modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="product-modal-title">Product Details</h3>
+        <button class="close-modal" onclick="closeModal('product-modal')">×</button>
+      </div>
+      
+      <div class="product-modal-body">
+        <div class="product-modal-image">
+          <img id="product-modal-img" src="" alt="" style="width: 100%; height: 300px; object-fit: cover; border-radius: 8px;">
+        </div>
+        
+        <div class="product-modal-info">
+          <div class="product-modal-price" id="product-modal-price">$0.00</div>
+          
+          <div class="product-modal-description" id="product-modal-description">
+            Loading product details...
+          </div>
+          
+          <div class="product-modal-details">
+            <div class="detail-row">
+              <span class="detail-label">Supplier:</span>
+              <span class="detail-value" id="product-modal-supplier">Loading...</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Trending Score:</span>
+              <span class="detail-value" id="product-modal-trending">🔥 0</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Found on:</span>
+              <span class="detail-value" id="product-modal-subreddit">r/loading</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Profit Margin:</span>
+              <span class="detail-value" id="product-modal-profit">$0.00</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Supplier Price:</span>
+              <span class="detail-value" id="product-modal-supplier-price">$0.00</span>
+            </div>
+          </div>
+          
+          <div class="product-modal-actions">
+            <button class="product-action-btn primary" onclick="buyProduct()">
+              🛒 Buy Now
+            </button>
+            <button class="product-action-btn secondary" onclick="addToWishlist()">
+              ❤️ Add to Wishlist
+            </button>
+            <button class="product-action-btn secondary" onclick="shareProduct()">
+              📱 Share
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="/js/main.js"></script>
+  <script src="/js/subtle-effect.js"></script>
+  
+  <script>
+    // Global product data for modal
+    let currentProducts = [];
+    
+    // Modal functions
+    function openModal(modalId) {
+      document.getElementById(modalId).style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+    
+    function switchModal(closeId, openId) {
+      closeModal(closeId);
+      openModal(openId);
+    }
+    
+    // Product modal functions
+    function openProductModal(productId) {
+      console.log('🔍 Opening product modal for ID:', productId);
+      
+      // Find the product in our current products array
+      const product = currentProducts.find(p => p.id === productId);
+      
+      if (!product) {
+        console.error('❌ Product not found:', productId);
+        return;
+      }
+      
+      console.log('📦 Product found:', product);
+      
+      // Populate modal with product data
+      document.getElementById('product-modal-title').textContent = product.name;
+      document.getElementById('product-modal-img').src = product.imageUrl || 'https://via.placeholder.com/400x300?text=Product';
+      document.getElementById('product-modal-img').alt = product.name;
+      document.getElementById('product-modal-price').textContent = `$${parseFloat(product.price).toFixed(2)}`;
+      document.getElementById('product-modal-description').textContent = product.description || `High-quality ${product.name} with excellent reviews and fast shipping.`;
+      document.getElementById('product-modal-supplier').textContent = product.supplier || 'Amazon';
+      document.getElementById('product-modal-trending').textContent = `🔥 ${product.trendingScore}`;
+      document.getElementById('product-modal-subreddit').textContent = `r/${product.subreddit}`;
+      document.getElementById('product-modal-profit').textContent = `$${parseFloat(product.profit || 0).toFixed(2)}`;
+      document.getElementById('product-modal-supplier-price').textContent = `$${parseFloat(product.supplierPrice || 0).toFixed(2)}`;
+      
+      // Store current product for actions
+      window.currentProduct = product;
+      
+      // Open the modal
+      openModal('product-modal');
+    }
+    
+    // Product action functions
+    function buyProduct() {
+      if (window.currentProduct) {
+        console.log('🛒 Buying product:', window.currentProduct.name);
+        alert(`🛒 Redirecting to purchase ${window.currentProduct.name}...`);
+        // Here you would redirect to Amazon/CJ or your checkout
+      }
+    }
+    
+    function addToWishlist() {
+      if (window.currentProduct) {
+        console.log('❤️ Adding to wishlist:', window.currentProduct.name);
+        alert(`❤️ Added ${window.currentProduct.name} to wishlist!`);
+        // Here you would add to user's wishlist
+      }
+    }
+    
+    function shareProduct() {
+      if (window.currentProduct) {
+        console.log('📱 Sharing product:', window.currentProduct.name);
+        
+        if (navigator.share) {
+          navigator.share({
+            title: window.currentProduct.name,
+            text: `Check out this ${window.currentProduct.name} for $${window.currentProduct.price}`,
+            url: window.location.href
+          });
+        } else {
+          // Fallback for browsers without Web Share API
+          const url = window.location.href;
+          navigator.clipboard.writeText(`${window.currentProduct.name} - ${url}`);
+          alert('📱 Product link copied to clipboard!');
+        }
+      }
+    }
+    
+    // Close modals when clicking outside the content
+    window.onclick = function(event) {
+      const modals = document.getElementsByClassName('modal');
+      for (let i = 0; i < modals.length; i++) {
+        if (event.target === modals[i]) {
+          modals[i].style.display = 'none';
+          document.body.style.overflow = 'auto';
+        }
+      }
+    };
+  </script>
+  
+  <script>
+    console.log('🚀 LOADING PRODUCTS WITH REAL IMAGES AND CJ DATA');
+    
+    // Load products immediately
+    (function() {
+      console.log('📡 Making fetch request to /api/automation/products');
+      
+      fetch('/api/automation/products?limit=8')
+        .then(response => {
+          console.log('🔥 Response received:', response.status, response.ok);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('📦 DATA RECEIVED:', data);
+          console.log('📊 Success:', data.success);
+          console.log('📊 Products count:', data.products ? data.products.length : 'NO PRODUCTS ARRAY');
+          
+          if (data.success && data.products && data.products.length > 0) {
+            console.log('✅ Processing products...');
+            
+            // Store products globally for modal use
+            currentProducts = data.products;
+            
+            const productGrid = document.getElementById('product-grid');
+            console.log('🎯 Product grid element:', productGrid);
+            
+            if (!productGrid) {
+              console.error('❌ PRODUCT GRID NOT FOUND!');
+              return;
+            }
+            
+            const html = data.products.map((product, index) => {
+              console.log(`Processing product ${index}:`, product.name, '$' + product.price);
+              console.log(`Image URL:`, product.imageUrl);
+              console.log(`Supplier:`, product.supplier);
+              
+              // Determine if it's a CJ product (real image) or Amazon (enhanced image)
+              const supplierBadge = product.supplier === 'cjdropshipping' ? 
+                '<div class="supplier-badge cj-badge">🏭 CJ Real Product</div>' : 
+                '<div class="supplier-badge amazon-badge">🛒 Amazon Enhanced</div>';
+              
+              return `
+                <div class="product-card" onclick="openProductModal('${product.id}')" style="cursor: pointer;">
+                  ${supplierBadge}
+                  <div class="product-image">
+                    <img src="${product.imageUrl || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop&crop=center'}" 
+                         alt="${product.name}" 
+                         style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div style="display:none; font-size:2rem; text-align:center; padding:50px;">🛍️</div>
+                  </div>
+                  <div class="product-info">
+                    <div class="product-name" style="white-space: normal; overflow: visible; text-overflow: unset; height: auto; line-height: 1.3;">${product.name}</div>
+                    <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
+                    <div class="product-rating">🔥 ${product.trendingScore} | r/${product.subreddit}</div>
+                    <div class="product-supplier" style="font-size: 0.8rem; color: #aaa; margin-top: 4px;">
+                      ${product.supplier === 'cjdropshipping' ? '🏭 CJ Dropshipping' : '🛒 Amazon Associates'}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+            
+            console.log('📝 Generated HTML length:', html.length);
+            
+            productGrid.innerHTML = html;
+            console.log('✅ PRODUCTS DISPLAYED WITH REAL CJ + ENHANCED AMAZON IMAGES!');
+            
+            // Log summary
+            const cjProducts = data.products.filter(p => p.supplier === 'cjdropshipping').length;
+            const amazonProducts = data.products.filter(p => p.supplier === 'amazon').length;
+            console.log(`📊 SUMMARY: ${cjProducts} CJ products (real images) + ${amazonProducts} Amazon products (enhanced images)`);
+            
+          } else {
+            console.error('❌ NO VALID PRODUCTS DATA');
+            const productGrid = document.getElementById('product-grid');
+            if (productGrid) {
+              productGrid.innerHTML = '<div style="color: #aaa; text-align: center; padding: 40px;">No products found. Try running the automation pipeline.</div>';
+            }
+          }
+        })
+        .catch(error => {
+          console.error('💥 FETCH ERROR:', error);
+          const productGrid = document.getElementById('product-grid');
+          if (productGrid) {
+            productGrid.innerHTML = `<div style="color: red; padding: 20px; text-align: center;">ERROR: ${error.message}</div>`;
+          }
+        });
+    })();
+  </script>
+</body>
+</html>

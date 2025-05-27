@@ -1,0 +1,236 @@
+// server/routes/products.js
+const express = require('express');
+const router = express.Router();
+const path = require('path');
+const fs = require('fs');
+const Product = require('../models/Product');
+const authMiddleware = require('../middleware/auth');
+const adminMiddleware = require('../middleware/admin');
+
+// @route   POST api/products
+// @desc    Create a new product
+// @access  Private/Admin
+router.post('/', [authMiddleware, adminMiddleware], async (req, res) => {
+  try {
+    if (!req.files || !req.files.image) {
+      return res.status(400).json({ msg: 'Product image is required' });
+    }
+
+    const { name, description, price, category } = req.body;
+    
+    if (!name || !description || !price || !category) {
+      return res.status(400).json({ msg: 'All fields are required' });
+    }
+
+    // Handle image file
+    const imageFile = req.files.image;
+    const imageExtension = path.extname(imageFile.name);
+    const imageFileName = `${Date.now()}${imageExtension}`;
+    const imagePath = `${__dirname}/../../public/uploads/products/${imageFileName}`;
+    
+    // Create directory if it doesn't exist
+    const imageDir = path.dirname(imagePath);
+    if (!fs.existsSync(imageDir)) {
+      fs.mkdirSync(imageDir, { recursive: true });
+    }
+
+    // Move file to the upload directory
+    await imageFile.mv(imagePath);
+
+    // Create new product
+    const product = new Product({
+      name,
+      description,
+      price,
+      category,
+      imageUrl: `/uploads/products/${imageFileName}`,
+      isPromoted: req.body.isPromoted === 'true'
+    });
+
+    await product.save();
+    res.json(product);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// @route   GET api/products
+// @desc    Get all products
+// @access  Public
+router.get('/', async (req, res) => {
+  try {
+    const products = await Product.find()
+      .sort({ isPromoted: -1, createdAt: -1 });
+      
+    res.json(products);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// @route   GET api/products/featured
+// @desc    Get featured products
+// @access  Public
+router.get('/featured', async (req, res) => {
+  try {
+    // First get promoted products
+    const promotedProducts = await Product.find({ inStock: true, isPromoted: true })
+      .sort({ createdAt: -1 })
+      .limit(4);
+    
+    // If we need more products to make up 4 total
+    let regularProducts = [];
+    if (promotedProducts.length < 4) {
+      regularProducts = await Product.find({ 
+        inStock: true, 
+        isPromoted: false,
+        _id: { $nin: promotedProducts.map(p => p._id) }
+      })
+        .sort({ 'ratings.1': -1, createdAt: -1 })
+        .limit(4 - promotedProducts.length);
+    }
+      
+    res.json([...promotedProducts, ...regularProducts]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// @route   GET api/products/:id
+// @desc    Get product by ID
+// @access  Public
+router.get('/:id', async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id)
+      .populate('ratings.user', ['name', 'profileImage']);
+      
+    if (!product) {
+      return res.status(404).json({ msg: 'Product not found' });
+    }
+    
+    res.json(product);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Product not found' });
+    }
+    res.status(500).send('Server error');
+  }
+});
+
+// @route   POST api/products/:id/rate
+// @desc    Rate a product
+// @access  Private
+router.post('/:id/rate', authMiddleware, async (req, res) => {
+  try {
+    const { value, review } = req.body;
+    
+    if (!value || value < 1 || value > 5) {
+      return res.status(400).json({ msg: 'Rating value must be between 1 and 5' });
+    }
+    
+    const product = await Product.findById(req.params.id);
+    
+    if (!product) {
+      return res.status(404).json({ msg: 'Product not found' });
+    }
+    
+    // Check if user has already rated this product
+    const existingRatingIndex = product.ratings.findIndex(
+      rating => rating.user.toString() === req.user.id
+    );
+    
+    if (existingRatingIndex !== -1) {
+      // Update existing rating
+      product.ratings[existingRatingIndex].value = value;
+      if (review) {
+        product.ratings[existingRatingIndex].review = review;
+      }
+    } else {
+      // Add new rating
+      const newRating = {
+        user: req.user.id,
+        value,
+        review: review || ''
+      };
+      
+      product.ratings.unshift(newRating);
+    }
+    
+    await product.save();
+    res.json(product.ratings);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// @route   PUT api/products/:id
+// @desc    Update a product
+// @access  Private/Admin
+router.put('/:id', [authMiddleware, adminMiddleware], async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    
+    if (!product) {
+      return res.status(404).json({ msg: 'Product not found' });
+    }
+    
+    const { name, description, price, category, inStock, isPromoted } = req.body;
+    
+    // Update fields if provided
+    if (name) product.name = name;
+    if (description) product.description = description;
+    if (price) product.price = price;
+    if (category) product.category = category;
+    if (inStock !== undefined) product.inStock = inStock;
+    if (isPromoted !== undefined) product.isPromoted = isPromoted;
+    
+    // Update image if provided
+    if (req.files && req.files.image) {
+      const imageFile = req.files.image;
+      const imageExtension = path.extname(imageFile.name);
+      const imageFileName = `${Date.now()}${imageExtension}`;
+      const imagePath = `${__dirname}/../../public/uploads/products/${imageFileName}`;
+      
+      // Move file to the upload directory
+      await imageFile.mv(imagePath);
+      
+      // Update image URL
+      product.imageUrl = `/uploads/products/${imageFileName}`;
+    }
+    
+    await product.save();
+    res.json(product);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// @route   DELETE api/products/:id
+// @desc    Delete a product
+// @access  Private/Admin
+router.delete('/:id', [authMiddleware, adminMiddleware], async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    
+    if (!product) {
+      return res.status(404).json({ msg: 'Product not found' });
+    }
+    
+    await product.remove();
+    res.json({ msg: 'Product removed' });
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Product not found' });
+    }
+    res.status(500).send('Server error');
+  }
+});
+
+module.exports = router;

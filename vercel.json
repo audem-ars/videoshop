@@ -1,12 +1,41 @@
 {
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/public/$1"
-    }
-  ]
-}
+    "version": 2,
+    "rewrites": [
+      {
+        "source": "/api/(.*)",
+        "destination": "/api"
+      },
+      {
+        "source": "/trending",
+        "destination": "/trending.html"
+      },
+      {
+        "source": "/subscriptions", 
+        "destination": "/subscriptions.html"
+      },
+      {
+        "source": "/shop",
+        "destination": "/shop.html"
+      },
+      {
+        "source": "/library",
+        "destination": "/library.html"
+      },
+      {
+        "source": "/history",
+        "destination": "/history.html"
+      },
+      {
+        "source": "/your-videos",
+        "destination": "/your-videos.html"
+      },
+      {
+        "source": "/watch-later",
+        "destination": "/watch-later.html"
+      },
+      {
+        "source": "/liked-videos",
+        "destination": "/liked-videos.html"
+      }
+    ]
+  }

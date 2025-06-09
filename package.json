@@ -2,7 +2,7 @@
     "name": "chocolate-video-shop",
     "version": "1.0.0",
     "description": "VideoShop dropshipping website with Stripe checkout and auto-fulfillment",
-    "main": "server/index.js",
+    "main": "api/index.js",
     "scripts": {
         "start": "node server/index.js",
         "dev": "nodemon server/index.js",

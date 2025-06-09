@@ -37,13 +37,6 @@
     </div>
   </header>
 
-<!-- Mobile Auth Elements -->
-<div class="mobile-auth-slide" id="mobileAuthSlide">
-  <button class="auth-btn" onclick="app.openModal('login-modal'); app.hideMobileAuth()">Login</button>
-  <button class="auth-btn" onclick="app.openModal('signup-modal'); app.hideMobileAuth()">Sign Up</button>
-</div>
-<button class="mobile-auth-trigger" id="mobileAuthTrigger" onclick="app.toggleMobileAuth()" style="display: none;">Login</button>
-
   <!-- Main Container -->
   <div class="container">
     <!-- Sidebar -->
@@ -591,7 +584,7 @@
       const userActions = document.querySelector('.user-actions');
       if (userActions) {
         const cartIcon = document.createElement('button');
-        cartIcon.innerHTML = `🛒 Cart (<span id="cart-count">0</span>)`;
+        cartIcon.innerHTML = ` Cart (<span id="cart-count">0</span>)`;
         cartIcon.onclick = openCart;
         cartIcon.style.cssText = `
           background: var(--cream-panel);

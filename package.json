@@ -6,7 +6,7 @@
     "scripts": {
         "start": "node server/index.js",
         "dev": "nodemon server/index.js",
-        "build": "echo 'No build needed - static files served from public/'",
+        "build": "echo 'Build complete - serving static files from public/'",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [

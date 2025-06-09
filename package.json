@@ -1,20 +1,28 @@
 {
     "name": "chocolate-video-shop",
     "version": "1.0.0",
-    "description": "VideoShop website with responsive background",
+    "description": "VideoShop dropshipping website with Stripe checkout and auto-fulfillment",
     "main": "server/index.js",
     "scripts": {
         "start": "node server/index.js",
         "dev": "nodemon server/index.js",
+        "build": "echo 'No build needed - static files served from public/'",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [
         "video",
         "shop",
-        "website"
+        "website",
+        "dropshipping",
+        "stripe",
+        "ecommerce"
     ],
     "author": "",
     "license": "ISC",
+    "engines": {
+        "node": ">=16.0.0",
+        "npm": ">=8.0.0"
+    },
     "dependencies": {
         "@stripe/stripe-js": "^7.3.0",
         "axios": "^1.9.0",
@@ -24,8 +32,11 @@
         "dotenv": "^16.5.0",
         "express": "^4.21.2",
         "express-fileupload": "^1.5.1",
+        "express-validator": "^7.2.1",
         "jsonwebtoken": "^9.0.2",
         "mongoose": "^7.8.7",
+        "nodemailer": "^7.0.3",
+        "puppeteer": "^24.10.0",
         "stripe": "^18.1.1",
         "uuid": "^11.1.0",
         "validator": "^13.9.0"

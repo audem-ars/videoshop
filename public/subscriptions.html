@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📧 Product Alerts - VideoShop</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <div class="hamburger-menu" id="hamburger-menu">
+      <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
+      <div class="hamburger-line"></div>
+    </div>
+    <a href="/" class="logo">Video<span>Shop</span></a>
+    <div class="search-bar">
+      <input type="text" placeholder="Search alerts">
+      <button>🔍</button>
+    </div>
+    <div class="user-actions">
+      <button id="upload-btn">Upload</button>
+      <a href="#" class="sign-in" onclick="openModal('login-modal')">Sign In</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <nav class="sidebar">
+      <a href="/" class="sidebar-item">
+        <span class="sidebar-icon">🏠</span>
+        <span class="sidebar-text">Home</span>
+      </a>
+      <a href="/trending" class="sidebar-item">
+        <span class="sidebar-icon">🔥</span>
+        <span class="sidebar-text">Trending</span>
+      </a>
+      <a href="/subscriptions" class="sidebar-item active">
+        <span class="sidebar-icon">📋</span>
+        <span class="sidebar-text">Product Alerts</span>
+      </a>
+      <a href="/shop" class="sidebar-item">
+        <span class="sidebar-icon">🛒</span>
+        <span class="sidebar-text">Shop</span>
+      </a>
+      <a href="/library" class="sidebar-item">
+        <span class="sidebar-icon">📚</span>
+        <span class="sidebar-text">Library</span>
+      </a>
+      <a href="/history" class="sidebar-item">
+        <span class="sidebar-icon">⏱️</span>
+        <span class="sidebar-text">History</span>
+      </a>
+      <a href="/your-videos" class="sidebar-item">
+        <span class="sidebar-icon">⏯️</span>
+        <span class="sidebar-text">Your Videos</span>
+      </a>
+      <a href="/watch-later" class="sidebar-item">
+        <span class="sidebar-icon">⏰</span>
+        <span class="sidebar-text">Watch Later</span>
+      </a>
+      <a href="/liked-videos" class="sidebar-item">
+        <span class="sidebar-icon">👍</span>
+        <span class="sidebar-text">Liked Videos</span>
+      </a>
+    </nav>
+
+    <div class="main-content">
+      <!-- Enhanced Subscriptions Header -->
+      <div class="subscriptions-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding: 32px; background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(139, 111, 71, 0.05)); border-radius: 16px; border: 1px solid rgba(212, 175, 55, 0.2); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
+        <div class="subscriptions-title-section">
+          <h1 class="subscriptions-title" style="font-size: 2.8rem; margin-bottom: 12px; background: linear-gradient(135deg, var(--premium-gold), var(--warm-bronze)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);">📧 Product Alerts</h1>
+          <p class="subscriptions-subtitle" style="color: var(--light-gray); font-size: 1.2rem; margin-top: 8px;">Get notified about new products in your favorite categories</p>
+        </div>
+        <div class="subscriptions-stats" id="subscriptions-stats" style="display: flex; gap: 32px;">
+          <div class="stat-item" style="text-align: center;">
+            <span class="stat-number" id="active-subscriptions" style="display: block; font-size: 2rem; font-weight: 700; color: var(--premium-gold); text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);">0</span>
+            <span class="stat-label" style="font-size: 1rem; color: var(--light-gray);">Active Alerts</span>
+          </div>
+          <div class="stat-item" style="text-align: center;">
+            <span class="stat-number" id="total-alerts-sent" style="display: block; font-size: 2rem; font-weight: 700; color: var(--premium-gold); text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);">0</span>
+            <span class="stat-label" style="font-size: 1rem; color: var(--light-gray);">Alerts Sent</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Must Be Logged In Notice -->
+      <div id="login-required" class="login-notice" style="display: none; text-align: center; padding: 40px; background: rgba(255, 255, 255, 0.03); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 40px;">
+        <div style="font-size: 3rem; margin-bottom: 16px;">🔒</div>
+        <h3 style="color: var(--text-color); margin-bottom: 8px;">Sign In Required</h3>
+        <p style="color: var(--light-gray); margin-bottom: 20px;">Please sign in to manage your product alerts and subscriptions.</p>
+        <button onclick="openModal('login-modal')" style="padding: 12px 24px; background: linear-gradient(135deg, var(--premium-gold), var(--warm-bronze)); color: #000; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Sign In Now</button>
+      </div>
+
+      <!-- Main Subscriptions Content -->
+      <div id="subscriptions-content" style="display: none;">
+        
+        <!-- Quick Subscribe Categories -->
+        <div class="quick-subscribe-section" style="margin-bottom: 40px;">
+          <div class="section-header" style="margin-bottom: 24px;">
+            <h2 class="section-title" style="font-size: 2rem; margin-bottom: 8px; color: var(--premium-gold); text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);">📦 Subscribe to Categories</h2>
+            <p class="section-subtitle" style="color: var(--light-gray); font-size: 1.1rem;">Get alerts when new products are found in these categories</p>
+          </div>
+          
+          <div class="category-subscription-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+            
+            <!-- Tech Category -->
+            <div class="subscription-card" data-category="tech" style="padding: 24px; background: rgba(255, 255, 255, 0.05); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <div style="font-size: 2.5rem;">🔌</div>
+                <div>
+                  <h4 style="color: var(--premium-gold); font-size: 1.2rem; margin-bottom: 4px;">Tech & Gadgets</h4>
+                  <p style="color: var(--light-gray); font-size: 0.9rem;">Smartphones, laptops, accessories</p>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="subscriber-count" style="font-size: 0.8rem; color: var(--light-gray);">0 subscribers</span>
+                <button class="subscribe-btn" onclick="toggleSubscription('category', 'tech', 'Tech & Gadgets')" style="padding: 8px 16px; background: transparent; color: var(--premium-gold); border: 1px solid var(--premium-gold); border-radius: 20px; cursor: pointer; transition: all 0.3s ease; font-size: 0.9rem;">
+                  Subscribe
+                </button>
+              </div>
+            </div>
+
+            <!-- Fashion Category -->
+            <div class="subscription-card" data-category="fashion" style="padding: 24px; background: rgba(255, 255, 255, 0.05); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <div style="font-size: 2.5rem;">👕</div>
+                <div>
+                  <h4 style="color: var(--premium-gold); font-size: 1.2rem; margin-bottom: 4px;">Fashion & Style</h4>
+                  <p style="color: var(--light-gray); font-size: 0.9rem;">Clothing, accessories, shoes</p>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="subscriber-count" style="font-size: 0.8rem; color: var(--light-gray);">0 subscribers</span>
+                <button class="subscribe-btn" onclick="toggleSubscription('category', 'fashion', 'Fashion & Style')" style="padding: 8px 16px; background: transparent; color: var(--premium-gold); border: 1px solid var(--premium-gold); border-radius: 20px; cursor: pointer; transition: all 0.3s ease; font-size: 0.9rem;">
+                  Subscribe
+                </button>
+              </div>
+            </div>
+
+            <!-- Home Category -->
+            <div class="subscription-card" data-category="home" style="padding: 24px; background: rgba(255, 255, 255, 0.05); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <div style="font-size: 2.5rem;">🏠</div>
+                <div>
+                  <h4 style="color: var(--premium-gold); font-size: 1.2rem; margin-bottom: 4px;">Home & Garden</h4>
+                  <p style="color: var(--light-gray); font-size: 0.9rem;">Furniture, decor, appliances</p>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="subscriber-count" style="font-size: 0.8rem; color: var(--light-gray);">0 subscribers</span>
+                <button class="subscribe-btn" onclick="toggleSubscription('category', 'home', 'Home & Garden')" style="padding: 8px 16px; background: transparent; color: var(--premium-gold); border: 1px solid var(--premium-gold); border-radius: 20px; cursor: pointer; transition: all 0.3s ease; font-size: 0.9rem;">
+                  Subscribe
+                </button>
+              </div>
+            </div>
+
+            <!-- Health Category -->
+            <div class="subscription-card" data-category="health" style="padding: 24px; background: rgba(255, 255, 255, 0.05); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <div style="font-size: 2.5rem;">💊</div>
+                <div>
+                  <h4 style="color: var(--premium-gold); font-size: 1.2rem; margin-bottom: 4px;">Health & Beauty</h4>
+                  <p style="color: var(--light-gray); font-size: 0.9rem;">Wellness, skincare, fitness</p>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="subscriber-count" style="font-size: 0.8rem; color: var(--light-gray);">0 subscribers</span>
+                <button class="subscribe-btn" onclick="toggleSubscription('category', 'health', 'Health & Beauty')" style="padding: 8px 16px; background: transparent; color: var(--premium-gold); border: 1px solid var(--premium-gold); border-radius: 20px; cursor: pointer; transition: all 0.3s ease; font-size: 0.9rem;">
+                  Subscribe
+                </button>
+              </div>
+            </div>
+
+            <!-- All Products -->
+            <div class="subscription-card" data-category="all" style="padding: 24px; background: rgba(255, 255, 255, 0.05); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <div style="font-size: 2.5rem;">🎯</div>
+                <div>
+                  <h4 style="color: var(--premium-gold); font-size: 1.2rem; margin-bottom: 4px;">All New Products</h4>
+                  <p style="color: var(--light-gray); font-size: 0.9rem;">Every product we discover</p>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="subscriber-count" style="font-size: 0.8rem; color: var(--light-gray);">0 subscribers</span>
+                <button class="subscribe-btn" onclick="toggleSubscription('new-products', 'all', 'All New Products')" style="padding: 8px 16px; background: transparent; color: var(--premium-gold); border: 1px solid var(--premium-gold); border-radius: 20px; cursor: pointer; transition: all 0.3s ease; font-size: 0.9rem;">
+                  Subscribe
+                </button>
+              </div>
+            </div>
+
+            <!-- Subreddit Subscriptions -->
+            <div class="subscription-card" data-category="subreddit" style="padding: 24px; background: rgba(255, 255, 255, 0.05); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <div style="font-size: 2.5rem;">📱</div>
+                <div>
+                  <h4 style="color: var(--premium-gold); font-size: 1.2rem; margin-bottom: 4px;">Reddit Communities</h4>
+                  <p style="color: var(--light-gray); font-size: 0.9rem;">Products from specific subreddits</p>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="subscriber-count" style="font-size: 0.8rem; color: var(--light-gray);">Coming soon</span>
+                <button class="subscribe-btn" style="padding: 8px 16px; background: transparent; color: var(--light-gray); border: 1px solid var(--light-gray); border-radius: 20px; cursor: not-allowed; font-size: 0.9rem;" disabled>
+                  Soon
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Active Subscriptions -->
+        <div class="active-subscriptions-section" style="margin-bottom: 40px;">
+          <div class="section-header" style="margin-bottom: 24px;">
+            <h2 class="section-title" style="font-size: 2rem; margin-bottom: 8px; color: var(--premium-gold); text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);">📋 Your Active Alerts</h2>
+            <p class="section-subtitle" style="color: var(--light-gray); font-size: 1.1rem;">Manage your current subscriptions</p>
+          </div>
+          
+          <div id="active-subscriptions-list" style="display: grid; gap: 16px;">
+            <div class="empty-subscriptions" style="text-align: center; padding: 40px; background: rgba(255, 255, 255, 0.03); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+              <div style="font-size: 2.5rem; margin-bottom: 16px;">📭</div>
+              <h4 style="color: var(--text-color); margin-bottom: 8px;">No active alerts yet</h4>
+              <p style="color: var(--light-gray);">Subscribe to categories above to get started!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email Preferences -->
+        <div class="email-preferences-section" style="margin-bottom: 40px;">
+          <div class="section-header" style="margin-bottom: 24px;">
+            <h2 class="section-title" style="font-size: 2rem; margin-bottom: 8px; color: var(--premium-gold); text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);">⚙️ Email Preferences</h2>
+            <p class="section-subtitle" style="color: var(--light-gray); font-size: 1.1rem;">Control how often you receive alerts</p>
+          </div>
+          
+          <div class="preferences-card" style="padding: 24px; background: rgba(255, 255, 255, 0.05); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div class="preference-group" style="margin-bottom: 20px;">
+              <label style="display: block; color: var(--text-color); font-weight: 500; margin-bottom: 8px;">Email Frequency:</label>
+              <select id="email-frequency" onchange="updateEmailPreferences()" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(0, 0, 0, 0.3); color: var(--text-color); font-size: 1rem;">
+                <option value="instant">Instant (as soon as products are found)</option>
+                <option value="daily" selected>Daily Digest (once per day)</option>
+                <option value="weekly">Weekly Summary (once per week)</option>
+              </select>
+            </div>
+            
+            <div class="preference-group">
+              <label style="display: flex; align-items: center; color: var(--text-color); cursor: pointer;">
+                <input type="checkbox" id="email-enabled" onchange="updateEmailPreferences()" checked style="margin-right: 8px;">
+                Enable email notifications
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay"></div>
+
+  <!-- Login Modal -->
+  <div id="login-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Sign In</h3>
+        <button class="close-modal" onclick="closeModal('login-modal')">×</button>
+      </div>
+      <form class="modal-form" id="login-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required>
+        </div>
+        <button type="submit" class="form-submit">Sign In</button>
+        <div class="form-switch">
+          Don't have an account? <a href="#" onclick="switchModal('login-modal', 'signup-modal')">Sign Up</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div id="signup-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Create Account</h3>
+        <button class="close-modal" onclick="closeModal('signup-modal')">×</button>
+      </div>
+      <form class="modal-form" id="signup-form">
+        <div class="form-group">
+          <label for="signup-name">Full Name</label>
+          <input type="text" id="signup-name" required>
+        </div>
+        <div class="form-group">
+          <label for="signup-email">Email</label>
+          <input type="email" id="signup-email" required>
+        </div>
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label for="signup-confirm">Confirm Password</label>
+          <input type="password" id="signup-confirm" required minlength="6">
+        </div>
+        <button type="submit" class="form-submit">Create Account</button>
+        <div class="form-switch">
+          Already have an account? <a href="#" onclick="switchModal('signup-modal', 'login-modal')">Sign In</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/main.js"></script>
+  <script src="/js/subtle-effect.js"></script>
+  
+  <script>
+    // Global variables
+    let userSubscriptions = [];
+    let isLoggedIn = false;
+    let currentUser = null;
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', async function() {
+      checkAuthStatus();
+      loadUserSubscriptions();
+      
+      setupAuthForms();
+    });
+
+    // Check if user is logged in
+    function checkAuthStatus() {
+      const token = localStorage.getItem('token');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      if (token && user.email) {
+        isLoggedIn = true;
+        currentUser = user;
+        
+        // Update sign in button
+        const signInBtn = document.querySelector('.sign-in');
+        if (signInBtn) {
+          signInBtn.textContent = `Welcome, ${user.name}`;
+          signInBtn.onclick = signOut;
+        }
+        
+        // Show subscriptions content
+        document.getElementById('login-required').style.display = 'none';
+        document.getElementById('subscriptions-content').style.display = 'block';
+      } else {
+        isLoggedIn = false;
+        currentUser = null;
+        
+        // Show login required notice
+        document.getElementById('login-required').style.display = 'block';
+        document.getElementById('subscriptions-content').style.display = 'none';
+      }
+    }
+
+    // Load user's subscriptions
+    async function loadUserSubscriptions() {
+      if (!isLoggedIn) return;
+      
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/automation/subscriptions', {
+          headers: {
+            'x-auth-token': token
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          userSubscriptions = data.subscriptions;
+          updateSubscriptionUI();
+          updateSubscriptionStats();
+        }
+      } catch (error) {
+        console.error('Error loading subscriptions:', error);
+      }
+    }
+
+    // Update subscription UI
+    function updateSubscriptionUI() {
+      // Update subscribe buttons
+      document.querySelectorAll('.subscription-card').forEach(card => {
+        const category = card.dataset.category;
+        const subscribeBtn = card.querySelector('.subscribe-btn');
+        
+        if (subscribeBtn && !subscribeBtn.disabled) {
+          const isSubscribed = userSubscriptions.some(sub => 
+            sub.target === category && sub.isActive
+          );
+          
+          if (isSubscribed) {
+            subscribeBtn.textContent = 'Subscribed ✓';
+            subscribeBtn.style.background = 'var(--premium-gold)';
+            subscribeBtn.style.color = '#000';
+          } else {
+            subscribeBtn.textContent = 'Subscribe';
+            subscribeBtn.style.background = 'transparent';
+            subscribeBtn.style.color = 'var(--premium-gold)';
+          }
+        }
+      });
+      
+      // Update active subscriptions list
+      updateActiveSubscriptionsList();
+    }
+
+    // Update active subscriptions list
+    function updateActiveSubscriptionsList() {
+      const container = document.getElementById('active-subscriptions-list');
+      
+      if (userSubscriptions.length === 0) {
+        container.innerHTML = `
+          <div class="empty-subscriptions" style="text-align: center; padding: 40px; background: rgba(255, 255, 255, 0.03); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div style="font-size: 2.5rem; margin-bottom: 16px;">📭</div>
+            <h4 style="color: var(--text-color); margin-bottom: 8px;">No active alerts yet</h4>
+            <p style="color: var(--light-gray);">Subscribe to categories above to get started!</p>
+          </div>
+        `;
+      } else {
+        container.innerHTML = userSubscriptions.map(subscription => `
+          <div class="active-subscription-item" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(255, 255, 255, 0.05); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="font-size: 1.5rem;">${getSubscriptionIcon(subscription.type, subscription.target)}</div>
+              <div>
+                <h4 style="color: var(--premium-gold); margin-bottom: 4px;">${subscription.displayName}</h4>
+                <p style="color: var(--light-gray); font-size: 0.9rem;">${subscription.frequency} alerts • ${subscription.alertCount} sent</p>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button onclick="toggleSubscriptionStatus('${subscription._id}')" style="padding: 6px 12px; background: transparent; color: var(--light-gray); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px; cursor: pointer; font-size: 0.8rem;">
+                ${subscription.isActive ? 'Pause' : 'Resume'}
+              </button>
+              <button onclick="deleteSubscription('${subscription._id}')" style="padding: 6px 12px; background: transparent; color: #ff4757; border: 1px solid #ff4757; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">
+                Delete
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // Get icon for subscription type
+    function getSubscriptionIcon(type, target) {
+      const icons = {
+        'tech': '🔌',
+        'fashion': '👕',
+        'home': '🏠',
+        'health': '💊',
+        'all': '🎯'
+      };
+      
+      if (type === 'category') {
+        return icons[target] || '📦';
+      } else if (type === 'new-products') {
+        return '🎯';
+      } else if (type === 'subreddit') {
+        return '📱';
+      }
+      
+      return '📧';
+    }
+
+    // Update subscription stats
+    function updateSubscriptionStats() {
+      const activeCount = userSubscriptions.filter(sub => sub.isActive).length;
+      const totalAlerts = userSubscriptions.reduce((sum, sub) => sum + sub.alertCount, 0);
+      
+      document.getElementById('active-subscriptions').textContent = activeCount;
+      document.getElementById('total-alerts-sent').textContent = totalAlerts;
+    }
+
+    // Toggle subscription (subscribe/unsubscribe)
+    async function toggleSubscription(type, target, displayName) {
+      if (!isLoggedIn) {
+        alert('Please sign in to manage subscriptions');
+        openModal('login-modal');
+        return;
+      }
+      
+      try {
+        const token = localStorage.getItem('token');
+        
+        // Check if already subscribed
+        const existingSubscription = userSubscriptions.find(sub => 
+          sub.type === type && sub.target === target && sub.isActive
+        );
+        
+        if (existingSubscription) {
+          // Unsubscribe
+          const response = await fetch(`/api/automation/subscriptions/${existingSubscription._id}`, {
+            method: 'DELETE',
+            headers: {
+              'x-auth-token': token
+            }
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            showNotification(`Unsubscribed from ${displayName}`, 'success');
+            loadUserSubscriptions();
+          } else {
+            showNotification('Failed to unsubscribe', 'error');
+          }
+        } else {
+          // Subscribe
+          const response = await fetch('/api/automation/subscriptions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-auth-token': token
+            },
+            body: JSON.stringify({
+              type: type,
+              target: target,
+              displayName: displayName,
+              frequency: document.getElementById('email-frequency').value || 'daily'
+            })
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            showNotification(`Subscribed to ${displayName}!`, 'success');
+            loadUserSubscriptions();
+          } else {
+            showNotification('Failed to subscribe', 'error');
+          }
+        }
+      } catch (error) {
+        console.error('Subscription error:', error);
+        showNotification('An error occurred', 'error');
+      }
+    }
+
+    // Toggle subscription status (pause/resume)
+    async function toggleSubscriptionStatus(subscriptionId) {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/automation/subscriptions/${subscriptionId}/toggle`, {
+          method: 'PUT',
+          headers: {
+            'x-auth-token': token
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          showNotification(data.message, 'success');
+          loadUserSubscriptions();
+        } else {
+          showNotification('Failed to update subscription', 'error');
+        }
+      } catch (error) {
+        console.error('Toggle subscription error:', error);
+        showNotification('An error occurred', 'error');
+      }
+    }
+
+    // Delete subscription
+    async function deleteSubscription(subscriptionId) {
+      if (!confirm('Are you sure you want to delete this subscription?')) {
+        return;
+      }
+      
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/automation/subscriptions/${subscriptionId}`, {
+          method: 'DELETE',
+          headers: {
+            'x-auth-token': token
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          showNotification('Subscription deleted', 'success');
+          loadUserSubscriptions();
+        } else {
+          showNotification('Failed to delete subscription', 'error');
+        }
+      } catch (error) {
+        console.error('Delete subscription error:', error);
+        showNotification('An error occurred', 'error');
+      }
+    }
+
+    // Update email preferences
+    async function updateEmailPreferences() {
+      if (!isLoggedIn) return;
+      
+      try {
+        const token = localStorage.getItem('token');
+        const frequency = document.getElementById('email-frequency').value;
+        const enabled = document.getElementById('email-enabled').checked;
+        
+        const response = await fetch('/api/automation/subscriptions/preferences', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token
+          },
+          body: JSON.stringify({
+            frequency: frequency,
+            enabled: enabled
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          showNotification('Preferences updated', 'success');
+        }
+      } catch (error) {
+        console.error('Update preferences error:', error);
+      }
+    }
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.textContent = message;
+      notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: ${type === 'success' ? 'var(--premium-gold)' : type === 'error' ? '#ff4757' : '#3742fa'};
+        color: ${type === 'success' ? '#000' : '#fff'};
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        animation: slideIn 0.3s ease;
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+          if (document.body.contains(notification)) {
+            document.body.removeChild(notification);
+          }
+        }, 300);
+      }, 3000);
+    }
+
+    // Modal functions
+    function openModal(modalId) {
+      document.getElementById(modalId).style.display = 'flex';
+      document.body.classList.add('modal-open');
+    }
+    
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+      document.body.classList.remove('modal-open');
+    }
+    
+    function switchModal(closeId, openId) {
+      closeModal(closeId);
+      openModal(openId);
+    }
+
+    // Auth form handlers
+    function setupAuthForms() {
+      // Login form
+      document.getElementById('login-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        try {
+          const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            
+            closeModal('login-modal');
+            checkAuthStatus();
+            loadUserSubscriptions();
+            
+            showNotification('Signed in successfully!', 'success');
+          } else {
+            showNotification('Login failed: ' + (data.errors?.[0]?.msg || 'Invalid credentials'), 'error');
+          }
+        } catch (error) {
+          console.error('Login error:', error);
+          showNotification('Login failed. Please try again.', 'error');
+        }
+      });
+
+      // Signup form
+      document.getElementById('signup-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('signup-name').value;
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        const confirmPassword = document.getElementById('signup-confirm').value;
+        
+        if (password !== confirmPassword) {
+          showNotification('Passwords do not match', 'error');
+          return;
+        }
+        
+        try {
+          const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, email, password })
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            
+            closeModal('signup-modal');
+            checkAuthStatus();
+            loadUserSubscriptions();
+            
+            showNotification('Account created successfully!', 'success');
+          } else {
+            showNotification('Signup failed: ' + (data.errors?.[0]?.msg || 'Unknown error'), 'error');
+          }
+        } catch (error) {
+          console.error('Signup error:', error);
+          showNotification('Signup failed. Please try again.', 'error');
+        }
+      });
+    }
+
+    // Sign out function
+    function signOut() {
+      if (confirm('Are you sure you want to sign out?')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        
+        isLoggedIn = false;
+        currentUser = null;
+        userSubscriptions = [];
+        
+        // Reset UI
+        document.querySelector('.sign-in').textContent = 'Sign In';
+        document.querySelector('.sign-in').onclick = () => openModal('login-modal');
+        
+        checkAuthStatus();
+        showNotification('Signed out successfully', 'success');
+      }
+    }
+
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+      const modals = document.getElementsByClassName('modal');
+      for (let i = 0; i < modals.length; i++) {
+        if (event.target === modals[i]) {
+          closeModal(modals[i].id);
+        }
+      }
+    };
+
+    // Add hover effects to subscription cards
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(() => {
+        document.querySelectorAll('.subscription-card').forEach(card => {
+          card.addEventListener('mouseenter', () => {
+            card.style.background = 'rgba(255, 255, 255, 0.08)';
+            card.style.transform = 'translateY(-4px)';
+            card.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.2), 0 0 15px rgba(212, 175, 55, 0.2)';
+          });
+          
+          card.addEventListener('mouseleave', () => {
+            card.style.background = 'rgba(255, 255, 255, 0.05)';
+            card.style.transform = 'translateY(0)';
+            card.style.boxShadow = 'none';
+          });
+        });
+      }, 100);
+    });
+  </script>
+
+  <style>
+    /* Enhanced Subscription Card Hover Effects */
+    .subscription-card:hover {
+      transform: translateY(-4px) !important;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2), 0 0 15px rgba(212, 175, 55, 0.2) !important;
+      background: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .subscription-card .subscribe-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+
+    /* Active subscription item animations */
+    .active-subscription-item {
+      transition: all 0.3s ease;
+    }
+
+    .active-subscription-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    /* Button hover effects */
+    .active-subscription-item button:hover {
+      transform: scale(1.02);
+    }
+
+    /* Notification animations */
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .subscriptions-header {
+        flex-direction: column !important;
+        gap: 20px;
+        text-align: center;
+        padding: 20px !important;
+      }
+
+      .subscriptions-stats {
+        gap: 16px !important;
+        justify-content: center;
+      }
+
+      .category-subscription-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px;
+      }
+
+      .subscription-card {
+        padding: 20px !important;
+      }
+
+      .subscriptions-title {
+        font-size: 2.2rem !important;
+      }
+
+      .active-subscription-item {
+        flex-direction: column !important;
+        gap: 16px;
+        align-items: flex-start !important;
+      }
+
+      .active-subscription-item > div:last-child {
+        align-self: stretch;
+        display: flex !important;
+        justify-content: space-between;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .subscriptions-title {
+        font-size: 1.8rem !important;
+      }
+
+      .subscriptions-subtitle {
+        font-size: 1rem !important;
+      }
+
+      .stat-number {
+        font-size: 1.5rem !important;
+      }
+
+      .section-title {
+        font-size: 1.6rem !important;
+      }
+
+      .subscription-card {
+        padding: 16px !important;
+      }
+    }
+  </style>
+</body>
+</html>

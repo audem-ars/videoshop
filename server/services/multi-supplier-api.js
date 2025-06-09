@@ -1,10 +1,10 @@
-// server/services/multi-supplier-api.js - REAL SCRAPING + CJ INTEGRATION
+// server/services/multi-supplier-api.js - CJ ONLY (Clean Version)
 const axios = require('axios');
-const RealAmazonScraper = require('./real-amazon-scraper'); // NEW!
+const Product = require('../models/Product');
 
 class MultiSupplierAPI {
   constructor() {
-    // CJ API Configuration (PRIMARY for real images)
+    // CJ API Configuration (ONLY SUPPLIER)
     this.cjConfig = {
       baseUrl: 'https://developers.cjdropshipping.com/api2.0/v1',
       email: process.env.CJ_EMAIL,
@@ -14,17 +14,15 @@ class MultiSupplierAPI {
       refreshToken: null,
       refreshTokenExpiry: null,
       lastRequestTime: 0,
-      rateLimitDelay: 60000 // 1 minute between requests
+      rateLimitDelay: 310000, // 5+ minutes between requests (310 seconds)
+      processedProductIds: new Set() // TRACK PROCESSED CJ PRODUCTS
     };
 
-    // Initialize REAL Amazon scraper
-    this.amazonScraper = new RealAmazonScraper();
-
-    // CJ PRIMARY for real images, Amazon with REAL scraping as backup
-    this.activeSuppliers = ['cj', 'amazon'];
+    // CJ ONLY
+    this.activeSuppliers = ['cj'];
   }
 
-  // Health check for both suppliers
+  // Health check for CJ only
   async healthCheck() {
     const health = {
       status: 'healthy',
@@ -33,7 +31,7 @@ class MultiSupplierAPI {
       errors: []
     };
 
-    // Check CJ (primary for real images)
+    // Check CJ only
     try {
       const timeSinceLastRequest = Date.now() - this.cjConfig.lastRequestTime;
       const canUseCJ = timeSinceLastRequest > this.cjConfig.rateLimitDelay;
@@ -57,76 +55,49 @@ class MultiSupplierAPI {
       health.errors.push(`CJ: ${error.message}`);
     }
 
-    // Check Amazon (real scraper)
-    health.suppliers.amazon = {
-      status: 'working',
-      name: 'Amazon Real Scraper',
-      productsAvailable: 'millions',
-      globalShipping: true,
-      realImages: true,
-      realProductData: true,
-      rateLimits: 'moderate'
-    };
-    health.activeCount++;
-
     return health;
   }
 
-  // Find products - PRIORITIZE CJ FOR REAL IMAGES
+  // MAIN METHOD: Find products from CJ only
   async findRealProductMatches(trendingProducts) {
     const allMatches = [];
     const maxProducts = 3;
 
-    console.log(`🎯 Processing ${maxProducts} products - CJ FIRST for REAL IMAGES, then REAL AMAZON SCRAPING...`);
+    console.log(`🎯 Processing ${maxProducts} products - CJ ONLY with REAL IMAGES...`);
 
     for (let i = 0; i < Math.min(trendingProducts.length, maxProducts); i++) {
       const trendingProduct = trendingProducts[i];
       const title = trendingProduct.redditData?.title || trendingProduct.title || 'trending product';
       console.log(`🔍 Searching for product ${i + 1}/${maxProducts}: ${title}`);
       
-      // TRY CJ FIRST (for real images and product data)
-      if (i === 0) { // Only try CJ for first product to respect rate limits
-        const timeSinceLastCJRequest = Date.now() - this.cjConfig.lastRequestTime;
-        if (timeSinceLastCJRequest > this.cjConfig.rateLimitDelay) {
-          try {
-            console.log(`🏭 Trying CJ first for REAL product images...`);
-            const cjMatches = await this.searchCJProducts(trendingProduct);
-            if (cjMatches.length > 0) {
-              console.log(`✅ CJ found ${cjMatches.length} REAL products with REAL images`);
-              allMatches.push(...cjMatches);
-              continue; // Skip Amazon for this product
-            }
-          } catch (error) {
-            console.error(`CJ search failed: ${error.message}`);
+      // CJ ONLY - try all products not just first one
+      const timeSinceLastCJRequest = Date.now() - this.cjConfig.lastRequestTime;
+      if (timeSinceLastCJRequest > this.cjConfig.rateLimitDelay) {
+        try {
+          console.log(`🏭 Searching CJ for REAL product images...`);
+          const cjMatches = await this.searchCJProductsWithDuplicateCheck(trendingProduct);
+          if (cjMatches.length > 0) {
+            console.log(`✅ CJ found ${cjMatches.length} NEW products with REAL images`);
+            allMatches.push(...cjMatches);
           }
-        } else {
-          const waitTime = Math.ceil((this.cjConfig.rateLimitDelay - timeSinceLastCJRequest) / 1000);
-          console.log(`⏳ CJ rate limited, wait ${waitTime}s more for REAL images`);
+        } catch (error) {
+          console.error(`CJ search failed: ${error.message}`);
         }
-      }
-
-      // Fall back to REAL AMAZON SCRAPING
-      try {
-        console.log(`🛒 Using REAL Amazon scraping...`);
-        const amazonMatches = await this.searchRealAmazonProducts(trendingProduct);
-        if (amazonMatches.length > 0) {
-          console.log(`✅ Amazon scraper found ${amazonMatches.length} REAL products with REAL images`);
-          allMatches.push(...amazonMatches);
-        }
-      } catch (error) {
-        console.error(`Amazon scraping failed: ${error.message}`);
+      } else {
+        const waitTime = Math.ceil((this.cjConfig.rateLimitDelay - timeSinceLastCJRequest) / 1000);
+        console.log(`⏳ CJ rate limited, wait ${waitTime}s more for REAL images`);
       }
 
       // Small delay between products
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
-    console.log(`🎯 Total products found: ${allMatches.length}`);
+    console.log(`🎯 Total CJ products found: ${allMatches.length}`);
     return allMatches;
   }
 
-  // CJ search (PRIMARY) - REAL PRODUCT IMAGES AND DATA
-  async searchCJProducts(trendingProduct) {
+  // CJ search with duplicate checking
+  async searchCJProductsWithDuplicateCheck(trendingProduct) {
     try {
       // Check rate limiting
       const timeSinceLastRequest = Date.now() - this.cjConfig.lastRequestTime;
@@ -145,11 +116,12 @@ class MultiSupplierAPI {
 
       const title = trendingProduct.redditData?.title || trendingProduct.title || 'trending product';
       const searchTerms = this.extractSearchTerms(title);
-      console.log(`🏭 CJ search for REAL products: "${searchTerms}"`);
+      console.log(`🏭 CJ search for NEW products: "${searchTerms}"`);
 
       this.cjConfig.lastRequestTime = Date.now();
 
-      const response = await axios.get(`${this.cjConfig.baseUrl}/product/list?keyword=${encodeURIComponent(searchTerms)}&pageNum=1&pageSize=10`, {
+      // Get MORE products to find non-duplicates
+      const response = await axios.get(`${this.cjConfig.baseUrl}/product/list?keyword=${encodeURIComponent(searchTerms)}&pageNum=1&pageSize=20`, {
         headers: {
           'CJ-Access-Token': this.cjConfig.accessToken
         },
@@ -162,23 +134,84 @@ class MultiSupplierAPI {
         productCount: response.data?.data?.list?.length || 0
       });
 
-      // Add delay to respect CJ rate limiting
       await new Promise(resolve => setTimeout(resolve, 1100));
 
       if (response.data && response.data.result && response.data.data && response.data.data.list) {
-        const products = response.data.data.list.slice(0, 1); // 1 product only for rate limiting
-        console.log(`🎯 Found ${products.length} REAL CJ product with REAL images`);
+        const allProducts = response.data.data.list;
+        console.log(`🔍 Scanning ${allProducts.length} CJ products for duplicates...`);
         
-        return products.map(product => {
-          const supplierPrice = parseFloat(product.sellPrice || 0);
+        // Find first non-duplicate product
+        let selectedProduct = null;
+        for (const product of allProducts) {
+          // Check if we already processed this product ID
+          if (this.cjConfig.processedProductIds.has(product.pid)) {
+            console.log(`⏭️ Skipping already processed: ${product.productNameEn} (${product.pid})`);
+            continue;
+          }
+
+          // Check database for duplicates
+          try {
+            const existingProducts = await Product.find({ 
+              'supplier.productId': product.pid 
+            }).limit(1);
+
+            if (existingProducts.length > 0) {
+              console.log(`⏭️ Skipping duplicate in database: ${product.productNameEn}`);
+              this.cjConfig.processedProductIds.add(product.pid); // Remember this
+              continue;
+            }
+          } catch (dupError) {
+            console.log('⚠️ Duplicate check failed, continuing anyway');
+          }
+
+          // Found a new product!
+          selectedProduct = product;
+          this.cjConfig.processedProductIds.add(product.pid); // Remember this
+          console.log(`✅ New CJ product selected: ${product.productNameEn}`);
+          break;
+        }
+
+        if (!selectedProduct) {
+          console.log('❌ No new CJ products found - all are duplicates');
+          return [];
+        }
+
+        // Process the selected product
+        try {
+          console.log(`📦 Getting detailed info for: "${selectedProduct.productNameEn}"`);
+          
+          const detailResponse = await axios.get(`${this.cjConfig.baseUrl}/product/variant/query?pid=${selectedProduct.pid}`, {
+            headers: {
+              'CJ-Access-Token': this.cjConfig.accessToken
+            },
+            timeout: 15000
+          });
+          
+          console.log(`🔍 CJ Detail API Response:`, {
+            success: detailResponse.data?.result,
+            message: detailResponse.data?.message,
+            variantCount: detailResponse.data?.data?.length || 0
+          });
+          
+          // Combine basic + detailed product info
+          const detailedProduct = {
+            ...selectedProduct,
+            detailedInfo: detailResponse.data?.data || [],
+            variants: detailResponse.data?.data || [],
+            allImages: this.extractAllImages(selectedProduct, detailResponse.data?.data),
+            specifications: this.extractSpecifications(selectedProduct, detailResponse.data?.data)
+          };
+          
+          const supplierPrice = this.extractPrice(selectedProduct.sellPrice);
           const finalPrice = supplierPrice * 1.28;
           const profit = finalPrice - supplierPrice;
           
-          console.log(`📦 REAL CJ Product: "${product.productNameEn}"`);
-          console.log(`🖼️ REAL CJ Image: ${product.productImage}`);
+          console.log(`📦 NEW CJ Product: "${selectedProduct.productNameEn}"`);
+          console.log(`🖼️ REAL CJ Images: ${detailedProduct.allImages.length} images`);
+          console.log(`🎨 REAL CJ Variants: ${detailedProduct.variants.length} variants`);
           console.log(`💰 REAL CJ Price: $${supplierPrice}`);
           
-          return {
+          return [{
             redditSource: {
               postId: trendingProduct.redditData?.postId || trendingProduct.id,
               title: trendingProduct.redditData?.title || trendingProduct.title,
@@ -192,12 +225,12 @@ class MultiSupplierAPI {
             
             supplier: {
               platform: 'cjdropshipping',
-              productId: product.pid,
-              supplierUrl: product.productUrl,
+              productId: selectedProduct.pid,
+              supplierUrl: selectedProduct.productUrl,
               supplierPrice: supplierPrice,
-              supplierTitle: product.productNameEn,
+              supplierTitle: selectedProduct.productNameEn,
               seller: {
-                name: 'CJDropshipping Verified',
+                name: 'Global Supplier',
                 rating: 4.5,
                 years: 5
               },
@@ -206,41 +239,56 @@ class MultiSupplierAPI {
                 estimatedDays: '7-15',
                 global: true
               },
-              soldCount: product.sellCount || 0,
-              inStock: product.productStatus === 1,
+              soldCount: selectedProduct.sellCount || 0,
+              inStock: selectedProduct.productStatus === 1,
               specifications: {
                 realProduct: true,
                 realImages: true,
-                realPrices: true
+                realPrices: true,
+                variantsAvailable: detailedProduct.variants.length > 0
               }
             },
             
             productData: {
-              title: product.productNameEn || `${this.cleanSearchTerms(searchTerms)} Pro`,
-              description: product.description || `High-quality ${product.productNameEn} with global shipping from CJ warehouses. Real product with verified supplier data.`,
-              images: product.productImages || [product.productImage],
-              mainImage: product.productImage,
-              imageUrl: product.productImage, // REAL CJ IMAGE URL
-              category: this.mapCategory(product.categoryName),
+              title: selectedProduct.productNameEn || `${this.cleanSearchTerms(searchTerms)} Pro`,
+              description: this.generateRichDescription(detailedProduct),
+              
+              // MULTIPLE IMAGES - All product images
+              images: detailedProduct.allImages,
+              mainImage: detailedProduct.allImages[0] || selectedProduct.productImage,
+              imageUrl: detailedProduct.allImages[0] || selectedProduct.productImage,
+              
+              // PRODUCT VARIANTS - Sizes, colors, etc.
+              variants: this.processVariants(detailedProduct.variants),
+              hasVariants: detailedProduct.variants.length > 0,
+              
+              // SPECIFICATIONS
+              specifications: detailedProduct.specifications,
+              
+              category: this.mapCategory(selectedProduct.categoryName),
               supplierPrice: supplierPrice,
               markupPercentage: 28,
               markupAmount: profit,
               finalPrice: finalPrice,
               compareAtPrice: supplierPrice * 1.4,
-              inStock: product.productStatus === 1,
-              stockQuantity: product.stockQuantity || 999,
-              sku: `CJ-${product.pid}`,
-              tags: this.generateTags(product.productNameEn),
-              seoTitle: `${product.productNameEn} - Fast Global Shipping`,
-              seoDescription: `${product.productNameEn} with fast global shipping from CJ warehouses.`,
+              inStock: selectedProduct.productStatus === 1,
+              stockQuantity: 999,
+              sku: `CJ-${selectedProduct.pid}`,
+              tags: this.generateTags(selectedProduct.productNameEn),
+              seoTitle: `${selectedProduct.productNameEn} - Fast Global Shipping`,
+              seoDescription: `${selectedProduct.productNameEn} with fast global shipping worldwide.`,
               realProduct: true,
-              cjProductId: product.pid
+              cjProductId: selectedProduct.pid
             },
             
             trendingScore: trendingProduct.redditData?.engagementScore || (trendingProduct.score + trendingProduct.num_comments),
             realProduct: true
-          };
-        });
+          }];
+          
+        } catch (detailError) {
+          console.error(`❌ Failed to get CJ product details: ${detailError.message}`);
+          return [];
+        }
       } else {
         console.log('❌ No CJ products found for this search');
         return [];
@@ -248,82 +296,7 @@ class MultiSupplierAPI {
 
     } catch (error) {
       console.error('❌ CJ search error:', error.message);
-      this.cjConfig.lastRequestTime = Date.now(); // Update last request time even on error
-      return [];
-    }
-  }
-
-  // REAL AMAZON SCRAPING (BACKUP) - Scrapes actual Amazon products
-  async searchRealAmazonProducts(trendingProduct) {
-    try {
-      const title = trendingProduct.redditData?.title || trendingProduct.title || 'trending product';
-      const searchTerms = this.extractSearchTerms(title);
-      
-      console.log(`🛒 REAL Amazon scraping for: "${searchTerms}"`);
-      
-      // Use the REAL Amazon scraper
-      const amazonProducts = await this.amazonScraper.scrapeRealProducts(searchTerms, 1);
-      
-      return amazonProducts.map(product => ({
-        redditSource: {
-          postId: trendingProduct.redditData?.postId || trendingProduct.id,
-          title: trendingProduct.redditData?.title || trendingProduct.title,
-          subreddit: trendingProduct.redditData?.subreddit || trendingProduct.subreddit,
-          upvotes: trendingProduct.redditData?.upvotes || trendingProduct.score,
-          comments: trendingProduct.redditData?.comments || trendingProduct.num_comments,
-          engagementScore: trendingProduct.redditData?.engagementScore || (trendingProduct.score + trendingProduct.num_comments),
-          permalink: trendingProduct.redditData?.permalink || `https://reddit.com${trendingProduct.permalink}`,
-          realProduct: true
-        },
-        
-        supplier: {
-          platform: 'amazon',
-          productId: product.asin,
-          supplierUrl: product.url,
-          supplierPrice: product.price,
-          supplierTitle: product.title,
-          seller: product.seller,
-          shipping: product.shipping,
-          soldCount: product.salesRank,
-          inStock: product.availability,
-          commission: product.commission,
-          specifications: {
-            realProduct: true,
-            realImages: true,
-            realPrices: true,
-            scraped: true
-          }
-        },
-        
-        productData: {
-          title: product.title,
-          description: product.description,
-          images: product.images,
-          mainImage: product.realImage || product.images[0], // Use real scraped image
-          imageUrl: product.realImage || product.images[0], // REAL AMAZON IMAGE
-          category: this.mapCategory(product.category),
-          supplierPrice: product.price,
-          markupPercentage: 28,
-          markupAmount: product.price * 0.28,
-          finalPrice: product.price * 1.28,
-          compareAtPrice: product.price * 1.4,
-          inStock: product.availability,
-          stockQuantity: 999,
-          sku: `AMZ-${product.asin}`,
-          tags: this.generateTags(product.title),
-          seoTitle: `${product.title} - Best Price & Fast Shipping`,
-          seoDescription: product.description,
-          realProduct: true,
-          amazonProductId: product.asin,
-          reviews: product.reviews // Include review data
-        },
-        
-        trendingScore: trendingProduct.redditData?.engagementScore || (trendingProduct.score + trendingProduct.num_comments),
-        realProduct: true
-      }));
-      
-    } catch (error) {
-      console.error('❌ Real Amazon scraping error:', error.message);
+      this.cjConfig.lastRequestTime = Date.now();
       return [];
     }
   }
@@ -367,6 +340,119 @@ class MultiSupplierAPI {
            Date.now() < this.cjConfig.tokenExpiry;
   }
 
+  extractAllImages(basicProduct, variantData) {
+    const images = [];
+    
+    // Main product image
+    if (basicProduct.productImage) {
+      images.push(basicProduct.productImage);
+    }
+    
+    // All variant images
+    if (Array.isArray(variantData)) {
+      variantData.forEach(variant => {
+        if (variant.variantImage && !images.includes(variant.variantImage)) {
+          images.push(variant.variantImage);
+        }
+      });
+    }
+    
+    // Images from product description
+    if (basicProduct.remark) {
+      const imgMatches = basicProduct.remark.match(/https?:\/\/[^\s"'<>]+\.(?:jpg|jpeg|png|gif|webp)/gi);
+      if (imgMatches) {
+        imgMatches.forEach(imgUrl => {
+          if (!images.includes(imgUrl)) {
+            images.push(imgUrl);
+          }
+        });
+      }
+    }
+    
+    return [...new Set(images)].filter(img => img && img.startsWith('http'));
+  }
+
+  // Process product variants (sizes, colors, etc.)
+  processVariants(variants) {
+    if (!variants || !Array.isArray(variants)) {
+      return [];
+    }
+    
+    return variants.map(variant => ({
+      id: variant.vid || variant.id,
+      name: variant.variantNameEn || variant.variantName || variant.name,
+      sku: variant.variantSku || variant.sku,
+      price: parseFloat(variant.variantSellPrice || variant.sellPrice || variant.price || 0),
+      image: variant.variantImage || variant.image,
+      key: variant.variantKey,
+      attributes: {
+        weight: variant.variantWeight,
+        dimensions: variant.variantStandard,
+        volume: variant.variantVolume
+      },
+      inStock: true,
+      stockQuantity: variant.inventoryNum || 999
+    }));
+  }
+
+  // Extract specifications from CJ data
+  extractSpecifications(basicProduct, variantData) {
+    const specs = {};
+    
+    // Basic specifications
+    if (basicProduct.productWeight) specs['Weight'] = `${basicProduct.productWeight}g`;
+    if (basicProduct.categoryName) specs['Category'] = basicProduct.categoryName;
+    if (basicProduct.productType) specs['Type'] = basicProduct.productType;
+    
+    // Variant specifications
+    if (Array.isArray(variantData) && variantData.length > 0) {
+      const firstVariant = variantData[0];
+      if (firstVariant.variantStandard) specs['Dimensions'] = firstVariant.variantStandard;
+    }
+    
+    return specs;
+  }
+
+  // Generate rich product description
+  generateRichDescription(product) {
+    let description = product.productNameEn || 'Premium Quality Product';
+    
+    // Add variant information
+    if (product.variants && product.variants.length > 0) {
+      const variantNames = product.variants.map(v => v.variantKey || v.name).filter(Boolean);
+      if (variantNames.length > 0) {
+        description += `\n\nAvailable variants: ${variantNames.slice(0, 3).join(', ')}`;
+        if (variantNames.length > 3) {
+          description += ` and ${variantNames.length - 3} more options`;
+        }
+      }
+    }
+    
+    // Add specifications if available
+    if (product.specifications && Object.keys(product.specifications).length > 0) {
+      description += '\n\nSpecifications:\n';
+      Object.entries(product.specifications).forEach(([key, value]) => {
+        description += `• ${key}: ${value}\n`;
+      });
+    }
+    
+    description += '\n\n✅ Fast global shipping worldwide\n✅ Quality guaranteed\n✅ Multiple payment options';    
+    return description;
+  }
+
+  // Extract price from CJ price string
+  extractPrice(priceString) {
+    if (!priceString) return 0;
+    
+    // Handle price ranges like "7.09 -- 8.82"
+    const prices = priceString.toString().match(/[\d.]+/g);
+    if (prices && prices.length > 0) {
+      return parseFloat(prices[0]); // Use lowest price
+    }
+    
+    return 0;
+  }
+
   // Extract search terms from Reddit title
   extractSearchTerms(title) {
     if (!title || typeof title !== 'string') {
@@ -394,31 +480,56 @@ class MultiSupplierAPI {
       .join(' ');
   }
 
-  // Map categories properly
   mapCategory(category) {
     if (!category) return 'other';
     
     const categoryMap = {
-      'Electronics': 'electronics',
-      'Home & Kitchen': 'home & garden',
-      'Health & Personal Care': 'health & beauty',
-      'Health & Beauty': 'health & beauty',
-      'Clothing': 'clothing',
-      'Sports & Outdoors': 'sports & outdoors',
-      'Accessories': 'accessories',
+      'Electronics': 'tech',
+      'Home & Kitchen': 'home',
+      'Home Office Storage': 'home',
+      'Health & Personal Care': 'health',
+      'Health & Beauty': 'health',
+      'Clothing': 'fashion',
+      'Sports & Outdoors': 'sports',
+      'Accessories': 'fashion',
       'Automotive': 'automotive',
-      'Books & Media': 'books & media',
-      'Food & Beverage': 'food & beverage',
-      'Pet Supplies': 'pet supplies'
+      'Books & Media': 'books',
+      'Food & Beverage': 'food',
+      'Pet Supplies': 'pets'
     };
     
     const lowerCategory = category.toLowerCase();
-    if (lowerCategory.includes('water') || lowerCategory.includes('drink') || lowerCategory.includes('kitchen')) return 'home & garden';
-    if (lowerCategory.includes('tech') || lowerCategory.includes('phone') || lowerCategory.includes('electronic')) return 'electronics';
-    if (lowerCategory.includes('cloth') || lowerCategory.includes('wear') || lowerCategory.includes('fashion')) return 'clothing';
-    if (lowerCategory.includes('beauty') || lowerCategory.includes('care') || lowerCategory.includes('health')) return 'health & beauty';
-    if (lowerCategory.includes('watch') || lowerCategory.includes('jewelry')) return 'accessories';
-    if (lowerCategory.includes('sport') || lowerCategory.includes('fitness') || lowerCategory.includes('outdoor')) return 'sports & outdoors';
+    
+    // IMPROVED FASHION DETECTION - Now includes shirt, blouse, dress, etc.
+    if (lowerCategory.includes('cloth') || lowerCategory.includes('wear') || lowerCategory.includes('fashion') || 
+        lowerCategory.includes('shirt') || lowerCategory.includes('blouse') || lowerCategory.includes('dress') ||
+        lowerCategory.includes('top') || lowerCategory.includes('bottom') || lowerCategory.includes('sleeve') ||
+        lowerCategory.includes('apparel') || lowerCategory.includes('garment') || lowerCategory.includes('outfit')) {
+      return 'fashion';
+    }
+    
+    // TECH DETECTION
+    if (lowerCategory.includes('tech') || lowerCategory.includes('phone') || lowerCategory.includes('electronic') ||
+        lowerCategory.includes('gadget') || lowerCategory.includes('device') || lowerCategory.includes('computer')) {
+      return 'tech';
+    }
+    
+    // HOME DETECTION
+    if (lowerCategory.includes('water') || lowerCategory.includes('drink') || lowerCategory.includes('kitchen') ||
+        lowerCategory.includes('office') || lowerCategory.includes('storage') || lowerCategory.includes('home') ||
+        lowerCategory.includes('furniture') || lowerCategory.includes('decor')) {
+      return 'home';
+    }
+    
+    // HEALTH & BEAUTY DETECTION
+    if (lowerCategory.includes('beauty') || lowerCategory.includes('care') || lowerCategory.includes('health') ||
+        lowerCategory.includes('cosmetic') || lowerCategory.includes('wellness') || lowerCategory.includes('skincare')) {
+      return 'health';
+    }
+    
+    // OTHER CATEGORIES
+    if (lowerCategory.includes('watch') || lowerCategory.includes('jewelry')) return 'fashion';
+    if (lowerCategory.includes('sport') || lowerCategory.includes('fitness') || lowerCategory.includes('outdoor')) return 'sports';
     
     return categoryMap[category] || 'other';
   }
@@ -430,6 +541,46 @@ class MultiSupplierAPI {
     return words.slice(0, 5);
   }
 
+  // Filter out low-quality Chinese text images
+filterQualityImages(images) {
+  return images.filter(imageUrl => {
+    // Skip images with Chinese text indicators
+    const lowQualityIndicators = [
+      'product/2025/05/27/08/',
+      'product/2025/05/27/09/',
+      'oss-cf.cjdropshipping.com/product/2025/05/27/08/',
+      'oss-cf.cjdropshipping.com/product/2025/05/27/09/',
+      'facdb5a8-e71c-419c-b85c-c35b900cff35',
+      'b57ba9ee-2428-4b81-87b0-1137324600d7',
+      // Skip very small or thumbnail images
+      'w=100', 'h=100', 'thumbnail',
+      // Skip obvious Chinese character images
+      'screenshot', 'spec', 'detail',
+      // Screenshot filters
+      'trans.jpeg', '_trans', 'detail.jpg', 'specs.jpg',
+      'info.jpg', 'size.jpg', 'chart', 'guide',
+      'instruction', 'manual', 'description.jpg',
+      // HTML/URL screenshot filters
+      '.html', 'https://', 'http://',
+      'webpage', 'browser', 'url',
+      // Chinese character patterns
+      '%E', '%C', '%D', // URL encoded Chinese
+      'zh-', 'cn-', 'chinese',
+      // Common Chinese text image patterns
+      'text.jpg', 'info.png', 'desc.jpg',
+      'param', 'attribute', 'property',
+      // Additional screenshot filters
+      'offerlists', 'spm', 'cosite'
+    ];
+    
+    // Filter URLs that look like Chinese text (lots of % encoding)
+    const percentCount = (imageUrl.match(/%/g) || []).length;
+    if (percentCount > 5) return false; // Too many % = Chinese URL encoding
+    
+    return !lowQualityIndicators.some(indicator => imageUrl.includes(indicator));
+  });
+ }
+
   // Test connection method
   async testConnection() {
     try {
@@ -439,6 +590,23 @@ class MultiSupplierAPI {
       return false;
     }
   }
+  // Add this method to your MultiSupplierAPI class in multi-supplier-api.js
+async getProductReviews(productName) {
+  try {
+    const RealReviewsScraper = require('./real-reviews-scraper');
+    const scraper = new RealReviewsScraper();
+    
+    console.log(`🎯 Getting REAL reviews for: ${productName}`);
+    const result = await scraper.getProductReviews(productName);
+    await scraper.close();
+    
+    return result;
+  } catch (error) {
+    console.error(`❌ Failed to get reviews for ${productName}:`, error.message);
+    return { success: false, error: error.message };
+  }
 }
+}
+
 
 module.exports = MultiSupplierAPI;

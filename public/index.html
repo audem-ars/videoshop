@@ -12,12 +12,12 @@
   
   <!-- CSS file -->
   <link rel="stylesheet" href="/css/style.css">
+  
+  <!-- Stripe.js -->
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
-  <!-- Ambient Background -->
-  <div class="ambient-background"></div>
   
-  <!-- Header -->
   <header>
     <div class="hamburger-menu" id="hamburger-menu">
       <div class="hamburger-line"></div>
@@ -36,7 +36,14 @@
       <a href="#" class="sign-in" onclick="openModal('login-modal')">Sign In</a>
     </div>
   </header>
-  
+
+<!-- Mobile Auth Elements -->
+<div class="mobile-auth-slide" id="mobileAuthSlide">
+  <button class="auth-btn" onclick="app.openModal('login-modal'); app.hideMobileAuth()">Login</button>
+  <button class="auth-btn" onclick="app.openModal('signup-modal'); app.hideMobileAuth()">Sign Up</button>
+</div>
+<button class="mobile-auth-trigger" id="mobileAuthTrigger" onclick="app.toggleMobileAuth()" style="display: none;">Login</button>
+
   <!-- Main Container -->
   <div class="container">
     <!-- Sidebar -->
@@ -79,169 +86,114 @@
       </a>
     </nav>
     
-    <!-- Main Content -->
-    <div class="main-content">
-      <!-- Featured Video -->
-      <div class="featured-video">
-        <div class="video-container">
-          <div class="video-placeholder">
-            <!-- Play button will be added by JS -->
-          </div>
-        </div>
-        <div class="video-info">
-          <h2 class="video-title">The Ultimate Guide to Natural Oral Care</h2>
-          <div class="video-stats">
-            <span>245K views</span>
-            <span>2 days ago</span>
-          </div>
-          <div class="video-actions">
-            <button class="video-action-btn">👍 Like</button>
-            <button class="video-action-btn">👎 Dislike</button>
-            <button class="video-action-btn">↗️ Share</button>
-            <button class="video-action-btn">💾 Save</button>
-          </div>
-          <div class="channel-info">
-            <div class="channel-avatar"></div>
-            <div>
-              <div class="channel-name">HealthEssentials</div>
-              <div class="channel-subscribers">1.2M subscribers</div>
-            </div>
-          </div>
-        </div>
+   <!-- Main Content -->
+<div class="main-content">
+  <!-- Featured Video -->
+  <div class="featured-video">
+    <div class="video-container">
+      <iframe 
+        src="https://www.youtube.com/embed/lE6RYpe9IT0" 
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+      </iframe>
+    </div>
+    
+    <div class="video-info">
+      <h2 class="video-title">Featured: Top Product Review of the Day</h2>
+      <div class="video-stats">
       </div>
-      
-      <!-- Shop Section -->
-      <div class="shop-section">
-        <div class="shop-header">
-          <h3 class="shop-title">Featured Products</h3>
-          <a href="/shop" class="shop-view-all">View All</a>
-        </div>
-        <div class="product-grid" id="product-grid">
-          <div class="loading-spinner">Loading trending products...</div>
-        </div>
-      </div>
-      
-      <!-- Recommended Videos -->
-      <div class="recommended-videos">
-        <div class="section-header">
-          <h3 class="section-title">Recommended Videos</h3>
-        </div>
-        <div class="video-grid">
-          <div class="video-card">
-            <div class="video-card-thumbnail">
-              <div class="video-card-duration">10:28</div>
-            </div>
-            <div class="video-card-info">
-              <div class="channel-avatar-small"></div>
-              <div class="video-card-details">
-                <h4 class="video-card-title">5 Tips for Healthier Skin in Winter</h4>
-                <div class="video-card-channel">SkinCareGuru</div>
-                <div class="video-card-stats">189K views • 3 weeks ago</div>
-              </div>
-            </div>
-          </div>
-          <div class="video-card">
-            <div class="video-card-thumbnail">
-              <div class="video-card-duration">15:42</div>
-            </div>
-            <div class="video-card-info">
-              <div class="channel-avatar-small"></div>
-              <div class="video-card-details">
-                <h4 class="video-card-title">DIY Natural Hair Treatments</h4>
-                <div class="video-card-channel">OrganicBeauty</div>
-                <div class="video-card-stats">87K views • 5 days ago</div>
-              </div>
-            </div>
-          </div>
-          <div class="video-card">
-            <div class="video-card-thumbnail">
-              <div class="video-card-duration">8:14</div>
-            </div>
-            <div class="video-card-info">
-              <div class="channel-avatar-small"></div>
-              <div class="video-card-details">
-                <h4 class="video-card-title">The Truth About Commercial Toothpastes</h4>
-                <div class="video-card-channel">HealthEssentials</div>
-                <div class="video-card-stats">325K views • 2 months ago</div>
-              </div>
-            </div>
-          </div>
-          <div class="video-card">
-            <div class="video-card-thumbnail">
-              <div class="video-card-duration">12:07</div>
-            </div>
-            <div class="video-card-info">
-              <div class="channel-avatar-small"></div>
-              <div class="video-card-details">
-                <h4 class="video-card-title">Morning Routine for Clearer Skin</h4>
-                <div class="video-card-channel">BeautyScience</div>
-                <div class="video-card-stats">152K views • 1 week ago</div>
-              </div>
-            </div>
-          </div>
+      <div class="channel-info">
+        <div>
+          <div class="channel-name">VideoShop Reviews</div>
+          <div class="channel-subscribers">500K subscribers</div>
         </div>
       </div>
     </div>
+    
+    <!-- Recommended Videos AFTER THE DESCRIPTION -->
+    <div class="recommended-videos">
+      <div class="section-header">
+        <h3 class="section-title">Recommended Videos</h3>
+      </div>
+      <div class="video-grid">
+        <!-- YouTube videos will be populated here by JavaScript -->
+      </div>
+    </div>
   </div>
+  
+  <!-- Shop Section -->
+  <div class="shop-section">
+    <div class="shop-header">
+      <h3 class="shop-title">Featured Products</h3>
+      <a href="/shop" class="shop-view-all">View All</a>
+    </div>
+    <div class="product-grid" id="product-grid">
+      <div class="loading-spinner">Loading trending products...</div>
+    </div>
+  </div>
+ </div>
   
   <!-- Sidebar Overlay -->
   <div class="sidebar-overlay"></div>
   
-  <!-- Login Modal -->
-  <div id="login-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">Sign In</h3>
-        <button class="close-modal" onclick="closeModal('login-modal')">×</button>
-      </div>
-      <form class="modal-form" id="login-form">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" required>
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" required>
-        </div>
-        <button type="submit" class="form-submit">Sign In</button>
-        <div class="form-switch">
-          Don't have an account? <a href="#" onclick="switchModal('login-modal', 'signup-modal')">Sign Up</a>
-        </div>
-      </form>
+<!-- Login Modal -->
+<div id="login-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">Sign In</h3>
+      <button class="close-modal" onclick="closeModal('login-modal')">×</button>
     </div>
-  </div>
-  
-  <!-- Signup Modal -->
-  <div id="signup-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">Create Account</h3>
-        <button class="close-modal" onclick="closeModal('signup-modal')">×</button>
+    <form class="modal-form" id="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required>
       </div>
-      <form class="modal-form" id="signup-form">
-        <div class="form-group">
-          <label for="signup-name">Full Name</label>
-          <input type="text" id="signup-name" required>
-        </div>
-        <div class="form-group">
-          <label for="signup-email">Email</label>
-          <input type="email" id="signup-email" required>
-        </div>
-        <div class="form-group">
-          <label for="signup-password">Password</label>
-          <input type="password" id="signup-password" required minlength="6">
-        </div>
-        <div class="form-group">
-          <label for="signup-confirm">Confirm Password</label>
-          <input type="password" id="signup-confirm" required minlength="6">
-        </div>
-        <button type="submit" class="form-submit">Create Account</button>
-        <div class="form-switch">
-          Already have an account? <a href="#" onclick="switchModal('signup-modal', 'login-modal')">Sign In</a>
-        </div>
-      </form>
-    </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+      </div>
+      <button type="submit" class="form-submit">Sign In</button>
+      <div class="form-switch">
+        Don't have an account? <a href="#" onclick="switchModal('login-modal', 'signup-modal')">Sign Up</a>
+        <br><br>
+        <a href="#" onclick="resetPassword()" style="color: #ff6b35;">Reset Password</a>
+      </div>
+    </form>
   </div>
+</div>
+
+<!-- Signup Modal -->
+<div id="signup-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">Create Account</h3>
+      <button class="close-modal" onclick="closeModal('signup-modal')">×</button>
+    </div>
+    <form class="modal-form" id="signup-form">
+      <div class="form-group">
+        <label for="signup-name">Full Name</label>
+        <input type="text" id="signup-name" required>
+      </div>
+      <div class="form-group">
+        <label for="signup-email">Email</label>
+        <input type="email" id="signup-email" required>
+      </div>
+      <div class="form-group">
+        <label for="signup-password">Password</label>
+        <input type="password" id="signup-password" required minlength="6">
+      </div>
+      <div class="form-group">
+        <label for="signup-confirm">Confirm Password</label>
+        <input type="password" id="signup-confirm" required minlength="6">
+      </div>
+      <button type="submit" class="form-submit">Create Account</button>
+      <div class="form-switch">
+        Already have an account? <a href="#" onclick="switchModal('signup-modal', 'login-modal')">Sign In</a>
+      </div>
+    </form>
+  </div>
+</div>
   
   <!-- Upload Modal -->
   <div id="upload-modal" class="modal">
@@ -277,62 +229,340 @@
     </div>
   </div>
 
-  <!-- PRODUCT MODAL - NEW! -->
+  <!-- SHOPPING CART MODAL -->
+  <div id="cart-modal" class="modal">
+    <div class="modal-content cart-modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Shopping Cart</h3>
+        <button class="close-modal" onclick="closeModal('cart-modal')">×</button>
+      </div>
+      
+      <div class="cart-modal-body">
+        <div id="cart-items-container">
+          <!-- Cart items will be populated by JavaScript -->
+        </div>
+        
+        <div class="cart-summary" id="cart-summary" style="display: none;">
+          <div class="summary-row">
+            <span>Subtotal:</span>
+            <span id="cart-subtotal">$0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping:</span>
+            <span id="cart-shipping">FREE</span>
+          </div>
+          <div class="summary-row">
+            <span>Tax (est.):</span>
+            <span id="cart-tax">$0.00</span>
+          </div>
+          <div class="summary-row total-row">
+            <span><strong>Total:</strong></span>
+            <span id="cart-total"><strong>$0.00</strong></span>
+          </div>
+        </div>
+        
+        <div class="cart-actions" id="cart-actions" style="display: none;">
+          <button class="cart-action-btn secondary" onclick="clearCart()">
+            🗑️ Clear Cart
+          </button>
+          <button class="cart-action-btn primary" onclick="proceedToCheckout()" id="checkout-btn">
+            🛒 Proceed to Checkout
+          </button>
+        </div>
+        
+        <div class="empty-cart" id="empty-cart">
+          <div style="text-align: center; padding: 40px;">
+            <div style="font-size: 3rem; margin-bottom: 16px;">🛒</div>
+            <h4>Your cart is empty</h4>
+            <p>Add some trending products to get started!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div id="checkout-modal" class="modal">
+    <div class="modal-content checkout-modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Secure Checkout</h3>
+        <button class="close-modal" onclick="closeModal('checkout-modal')">×</button>
+      </div>
+      
+      <div class="checkout-modal-body">
+        <!-- Customer Information -->
+        <div class="checkout-section">
+          <h4>Contact Information</h4>
+          <div class="form-group">
+            <label for="checkout-email">Email *</label>
+            <input type="email" id="checkout-email" required placeholder="your@email.com">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="checkout-first-name">First Name *</label>
+              <input type="text" id="checkout-first-name" required>
+            </div>
+            <div class="form-group">
+              <label for="checkout-last-name">Last Name *</label>
+              <input type="text" id="checkout-last-name" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="checkout-phone">Phone (optional)</label>
+            <input type="tel" id="checkout-phone" placeholder="+1 (555) 123-4567">
+          </div>
+        </div>
+        
+        <!-- Shipping Address -->
+        <div class="checkout-section">
+          <h4>Shipping Address</h4>
+          <div class="form-group">
+            <label for="checkout-address1">Address Line 1 *</label>
+            <input type="text" id="checkout-address1" required placeholder="123 Main Street">
+          </div>
+          <div class="form-group">
+            <label for="checkout-address2">Address Line 2 (optional)</label>
+            <input type="text" id="checkout-address2" placeholder="Apt 4B">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="checkout-city">City *</label>
+              <input type="text" id="checkout-city" required>
+            </div>
+            <div class="form-group">
+              <label for="checkout-state">State *</label>
+              <input type="text" id="checkout-state" required placeholder="CA">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="checkout-zip">ZIP Code *</label>
+              <input type="text" id="checkout-zip" required placeholder="90210">
+            </div>
+            <div class="form-group">
+              <label for="checkout-country">Country *</label>
+              <select id="checkout-country" required>
+                <option value="US">🇺🇸 United States</option>
+                <option value="CA">🇨🇦 Canada</option>
+                <option value="GB">🇬🇧 United Kingdom</option>
+                <option value="AU">🇦🇺 Australia</option>
+                <option value="DE">🇩🇪 Germany</option>
+                <option value="FR">🇫🇷 France</option>
+                <option value="IT">🇮🇹 Italy</option>
+                <option value="ES">🇪🇸 Spain</option>
+                <option value="NL">🇳🇱 Netherlands</option>
+                <option value="SE">🇸🇪 Sweden</option>
+                <option value="NO">🇳🇴 Norway</option>
+                <option value="DK">🇩🇰 Denmark</option>
+                <option value="FI">🇫🇮 Finland</option>
+                <option value="JP">🇯🇵 Japan</option>
+                <option value="KR">🇰🇷 South Korea</option>
+                <option value="SG">🇸🇬 Singapore</option>
+                <option value="MY">🇲🇾 Malaysia</option>
+                <option value="TH">🇹🇭 Thailand</option>
+                <option value="IN">🇮🇳 India</option>
+                <option value="BR">🇧🇷 Brazil</option>
+                <option value="MX">🇲🇽 Mexico</option>
+                <option value="AR">🇦🇷 Argentina</option>
+                <option value="CL">🇨🇱 Chile</option>
+                <option value="ZA">🇿🇦 South Africa</option>
+                <option value="EG">🇪🇬 Egypt</option>
+                <option value="AE">🇦🇪 UAE</option>
+                <option value="SA">🇸🇦 Saudi Arabia</option>
+                <option value="IL">🇮🇱 Israel</option>
+                <option value="TR">🇹🇷 Turkey</option>
+                <option value="RU">🇷🇺 Russia</option>
+                <option value="UA">🇺🇦 Ukraine</option>
+                <option value="PL">🇵🇱 Poland</option>
+                <option value="CZ">🇨🇿 Czech Republic</option>
+                <option value="HU">🇭🇺 Hungary</option>
+                <option value="BG">🇧🇬 Bulgaria</option>
+                <option value="RO">🇷🇴 Romania</option>
+                <option value="HR">🇭🇷 Croatia</option>
+                <option value="SI">🇸🇮 Slovenia</option>
+                <option value="SK">🇸🇰 Slovakia</option>
+                <option value="AT">🇦🇹 Austria</option>
+                <option value="BE">🇧🇪 Belgium</option>
+                <option value="CH">🇨🇭 Switzerland</option>
+                <option value="IE">🇮🇪 Ireland</option>
+                <option value="PT">🇵🇹 Portugal</option>
+                <option value="GR">🇬🇷 Greece</option>
+                <option value="CN">🇨🇳 China</option>
+                <option value="HK">🇭🇰 Hong Kong</option>
+                <option value="TW">🇹🇼 Taiwan</option>
+                <option value="ID">🇮🇩 Indonesia</option>
+                <option value="PH">🇵🇭 Philippines</option>
+                <option value="VN">🇻🇳 Vietnam</option>
+                <option value="NZ">🇳🇿 New Zealand</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="checkout-section">
+          <h4>Order Summary</h4>
+          <div id="checkout-items-list">
+            <!-- Items will be populated by JavaScript -->
+          </div>
+          <div class="checkout-summary">
+            <div class="summary-row">
+              <span>Subtotal:</span>
+              <span id="checkout-subtotal">$0.00</span>
+            </div>
+            <div class="summary-row">
+              <span>Shipping:</span>
+              <span id="checkout-shipping">FREE</span>
+            </div>
+            <div class="summary-row">
+              <span>Tax (est.):</span>
+              <span id="checkout-tax">$0.00</span>
+            </div>
+            <div class="summary-row total-row">
+              <span><strong>Total:</strong></span>
+              <span id="checkout-total"><strong>$0.00</strong></span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Checkout Actions -->
+        <div class="checkout-actions">
+          <button class="checkout-action-btn secondary" onclick="goBackToCart()">
+            ← Back to Cart
+          </button>
+          <button class="checkout-action-btn primary" onclick="createStripeSession()" id="stripe-checkout-btn">
+            🔒 Pay Securely with Stripe
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT MODAL -->
   <div id="product-modal" class="modal">
     <div class="modal-content product-modal-content">
       <div class="modal-header">
         <h3 class="modal-title" id="product-modal-title">Product Details</h3>
-        <button class="close-modal" onclick="closeModal('product-modal')">×</button>
+        <button class="close-modal" onclick="closeProductModal()">×</button>
       </div>
       
       <div class="product-modal-body">
-        <div class="product-modal-image">
-          <img id="product-modal-img" src="" alt="" style="width: 100%; height: 300px; object-fit: cover; border-radius: 8px;">
+        <!-- Product Image Gallery -->
+        <div class="product-modal-images">
+          <div class="main-image-container">
+            <img id="product-modal-main-img" src="" alt="" style="width: 100%; height: 850px; object-fit: contain; border-radius: 8px; max-width: none;">
+          </div>
+          <div class="thumbnail-images" id="product-thumbnails" style="display: none;">
+            <!-- Thumbnails will be populated by JS -->
+          </div>
         </div>
         
         <div class="product-modal-info">
           <div class="product-modal-price" id="product-modal-price">$0.00</div>
           
+          <!-- Enhanced Product Description -->
           <div class="product-modal-description" id="product-modal-description">
             Loading product details...
           </div>
           
-          <div class="product-modal-details">
-            <div class="detail-row">
-              <span class="detail-label">Supplier:</span>
-              <span class="detail-value" id="product-modal-supplier">Loading...</span>
+          <!-- Product Variants Selection -->
+          <div class="product-variants" id="product-variants" style="display: none; margin: 16px 0; padding: 16px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+            <h4 style="margin-bottom: 12px; color: var(--premium-gold);">Available Options:</h4>
+            <div class="variant-selectors" id="variant-selectors">
+              <!-- Size selector -->
+              <div class="variant-group" id="size-selector-group" style="display: none; margin-bottom: 12px;">
+                <label style="display: block; margin-bottom: 4px; font-weight: 500;">Size:</label>
+                <select id="size-selector" onchange="updateSelectedVariant()" style="width: 100%; padding: 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); background: #000000; color: var(--text-color); font-size: 1rem;">
+                  <option value="">Select Size</option>
+                </select>
+              </div>
+              
+              <!-- Color selector -->
+              <div class="variant-group" id="color-selector-group" style="display: none; margin-bottom: 12px;">
+                <label style="display: block; margin-bottom: 4px; font-weight: 500;">Color:</label>
+                <select id="color-selector" onchange="updateSelectedVariant()" style="width: 100%; padding: 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); background: #000000; color: var(--text-color); font-size: 1rem;">
+                  <option value="">Select Color</option>
+                </select>
+              </div>
+              
+              <!-- Style selector (for CJ variants) -->
+              <div class="variant-group" id="style-selector-group" style="display: none; margin-bottom: 12px;">
+                <label style="display: block; margin-bottom: 4px; font-weight: 500;">Style:</label>
+                <select id="style-selector" onchange="updateSelectedVariant()" style="width: 100%; padding: 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); background: #000000; color: var(--text-color); font-size: 1rem;">
+                  <option value="">Select Style</option>
+                </select>
+              </div>
+              
+              <!-- Selected variant price -->
+              <div class="variant-price" id="variant-price" style="display: none; margin-top: 12px; font-weight: bold; color: var(--premium-gold);">
+                Selected Option: $<span id="variant-price-value">0.00</span>
+              </div>
             </div>
+          </div>
+          
+          <!-- Product Features (if available) -->
+          <div class="product-features" id="product-features" style="display: none;">
+            <h4>Key Features:</h4>
+            <ul id="product-features-list"></ul>
+          </div>
+
+          <!-- Customer-Facing Details Only -->
+          <div class="product-modal-details">
             <div class="detail-row">
               <span class="detail-label">Trending Score:</span>
               <span class="detail-value" id="product-modal-trending">🔥 0</span>
             </div>
             <div class="detail-row">
-              <span class="detail-label">Found on:</span>
+              <span class="detail-label">Discovered on:</span>
               <span class="detail-value" id="product-modal-subreddit">r/loading</span>
             </div>
             <div class="detail-row">
-              <span class="detail-label">Profit Margin:</span>
-              <span class="detail-value" id="product-modal-profit">$0.00</span>
+              <span class="detail-label">Shipping:</span>
+              <span class="detail-value" id="product-modal-shipping">Fast & Free</span>
             </div>
             <div class="detail-row">
-              <span class="detail-label">Supplier Price:</span>
-              <span class="detail-value" id="product-modal-supplier-price">$0.00</span>
+              <span class="detail-label">Availability:</span>
+              <span class="detail-value" id="product-modal-stock">In Stock</span>
             </div>
           </div>
           
-          <div class="product-modal-actions">
-            <button class="product-action-btn primary" onclick="buyProduct()">
-              🛒 Buy Now
+          <!-- Updated Action Buttons -->
+          <div class="product-modal-actions" style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
+            <button class="product-action-btn primary" onclick="addToCartFromModal()" id="add-to-cart-modal-btn" style="flex: 1; min-width: 140px; padding: 12px 16px; border-radius: 8px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, var(--premium-gold), var(--warm-bronze)); color: #000; transition: all 0.3s ease;">
+              🛒 Add to Cart
             </button>
-            <button class="product-action-btn secondary" onclick="addToWishlist()">
-              ❤️ Add to Wishlist
+            <button class="product-action-btn primary" onclick="addToCartAndCheckout()" id="buy-now-btn" style="flex: 1; min-width: 140px; padding: 12px 16px; border-radius: 8px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, var(--premium-gold), var(--warm-bronze));; color: #000; transition: all 0.3s ease;">
+              🚀 Buy Now
             </button>
-            <button class="product-action-btn secondary" onclick="shareProduct()">
-              📱 Share
+            <button class="product-action-btn secondary" onclick="addToWishlist()" id="wishlist-btn" style="flex: 1; min-width: 140px; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: var(--text-color); cursor: pointer; transition: all 0.3s ease;">
+              ❤️ Save for Later
             </button>
           </div>
-        </div>
+          <!-- Product Reviews Section - CLICKABLE -->
+<div class="product-reviews-section" id="product-reviews-section" style="display: none; margin: 16px 0; padding: 16px; background: rgba(255,255,255,0.03); border-radius: 8px; cursor: pointer;" onclick="openReviewsModal()">
+  <h4 style="margin-bottom: 12px; color: var(--premium-gold);">Customer Reviews:</h4>
+  <div id="product-reviews-preview">
+    <!-- Preview will be populated by JavaScript -->
+  </div>
+  <div style="margin-top: 8px; color: #888; font-size: 0.9rem;">
+    💬 Click to see all reviews
+  </div>
+</div>
+
+<!-- REVIEWS POPUP MODAL -->
+<div id="reviews-modal" class="modal" style="position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 10000 !important; align-items: center !important; justify-content: center !important; background: rgba(0,0,0,0.85) !important;">
+  <div class="modal-content" style="max-width: 600px; max-height: 80vh;">
+    <div class="modal-header">
+      <h3 class="modal-title" id="reviews-modal-title">Customer Reviews</h3>
+      <button class="close-modal" onclick="closeModal('reviews-modal')">×</button>
+    </div>
+    <div class="modal-body" style="max-height: 500px; overflow-y: auto; padding: 20px;">
+      <div id="reviews-modal-content">
+        <!-- All reviews will be populated here -->
       </div>
+    </div>
+  </div>
+</div>
     </div>
   </div>
   
@@ -341,18 +571,61 @@
   <script src="/js/subtle-effect.js"></script>
   
   <script>
-    // Global product data for modal
+    // Global variables
     let currentProducts = [];
-    
-    // Modal functions
+    let cart = JSON.parse(localStorage.getItem('videoshop-cart') || '[]');
+    let stripe = null;
+
+    // Initialize Stripe (will be set with your publishable key)
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Initialize Stripe with your publishable key
+      stripe = Stripe('{{STRIPE_PUBLISHABLE_KEY}}');
+      
+      // Add cart icon to header
+      addCartIconToHeader();
+      updateCartCount();
+    });
+
+    // Add cart icon to header
+    function addCartIconToHeader() {
+      const userActions = document.querySelector('.user-actions');
+      if (userActions) {
+        const cartIcon = document.createElement('button');
+        cartIcon.innerHTML = `🛒 Cart (<span id="cart-count">0</span>)`;
+        cartIcon.onclick = openCart;
+        cartIcon.style.cssText = `
+          background: var(--cream-panel);
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          color: #1a1a1a;
+          cursor: pointer;
+          font-size: 0.95rem;
+          font-weight: 600;
+          padding: 11px 18px;
+          border-radius: 24px;
+          margin-right: 16px;
+          transition: all 0.3s ease;
+        `;
+        userActions.insertBefore(cartIcon, userActions.firstChild);
+      }
+    }
+
+    // Modal functions - FIXED for scroll bug
     function openModal(modalId) {
       document.getElementById(modalId).style.display = 'flex';
-      document.body.style.overflow = 'hidden';
+      document.body.classList.add('modal-open');
     }
     
     function closeModal(modalId) {
       document.getElementById(modalId).style.display = 'none';
-      document.body.style.overflow = 'auto';
+      document.body.classList.remove('modal-open');
+    }
+    
+    function closeProductModal() {
+      closeModal('product-modal');
+      setTimeout(() => {
+        document.body.style.overflow = 'auto';
+        document.documentElement.style.overflow = 'auto';
+      }, 100);
     }
     
     function switchModal(closeId, openId) {
@@ -360,11 +633,433 @@
       openModal(openId);
     }
     
-    // Product modal functions
+    // Shopping Cart Functions
+    function addToCart(productId) {
+      console.log('🛒 Adding product to cart:', productId);
+      
+      const product = currentProducts.find(p => p.id === productId);
+      if (!product) {
+        console.error('❌ Product not found:', productId);
+        return;
+      }
+      
+      const existingItem = cart.find(item => item.productId === productId);
+      
+      if (existingItem) {
+        existingItem.quantity += 1;
+        console.log('📦 Updated quantity for:', product.name);
+      } else {
+        cart.push({
+          productId: productId,
+          name: product.name,
+          price: parseFloat(product.price),
+          supplierPrice: parseFloat(product.supplierPrice || 0),
+          imageUrl: product.imageUrl,
+          supplier: product.supplier,
+          quantity: 1,
+          addedAt: new Date().toISOString()
+        });
+        console.log('✅ Added new item to cart:', product.name);
+      }
+      
+      saveCart();
+      updateCartCount();
+      showCartNotification(`Added ${product.name} to cart!`);
+    }
+
+    function addToCartFromModal() {
+      if (window.currentProduct) {
+        addToCart(window.currentProduct.id);
+        closeProductModal();
+      }
+    }
+
+    // NEW: Add to cart and go straight to checkout
+    function addToCartAndCheckout() {
+      if (window.currentProduct) {
+        addToCart(window.currentProduct.id);
+        closeProductModal();
+        // Small delay to ensure cart is updated
+        setTimeout(() => {
+          openCart();
+        }, 300);
+      }
+    }
+
+    function saveCart() {
+      localStorage.setItem('videoshop-cart', JSON.stringify(cart));
+    }
+
+    function updateCartCount() {
+      const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const cartCountElement = document.getElementById('cart-count');
+      if (cartCountElement) {
+        cartCountElement.textContent = cartCount;
+      }
+    }
+
+    function showCartNotification(message) {
+      const notification = document.createElement('div');
+      notification.textContent = message;
+      notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: var(--premium-gold);
+        color: #000;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        animation: slideIn 0.3s ease;
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+          if (document.body.contains(notification)) {
+            document.body.removeChild(notification);
+          }
+        }, 300);
+      }, 3000);
+    }
+
+    function openCart() {
+      renderCart();
+      openModal('cart-modal');
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cart-items-container');
+      const summary = document.getElementById('cart-summary');
+      const actions = document.getElementById('cart-actions');
+      const emptyCart = document.getElementById('empty-cart');
+      
+      if (cart.length === 0) {
+        container.innerHTML = '';
+        summary.style.display = 'none';
+        actions.style.display = 'none';
+        emptyCart.style.display = 'block';
+        return;
+      }
+      
+      emptyCart.style.display = 'none';
+      summary.style.display = 'block';
+      actions.style.display = 'flex';
+      
+      container.innerHTML = cart.map(item => `
+        <div class="cart-item" data-product-id="${item.productId}">
+          <div class="cart-item-image">
+            <img src="${item.imageUrl}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
+          </div>
+          <div class="cart-item-details">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-price">$${item.price.toFixed(2)} each</div>
+          </div>
+          <div class="cart-item-quantity">
+            <button onclick="updateQuantity('${item.productId}', -1)" class="quantity-btn">-</button>
+            <span class="quantity">${item.quantity}</span>
+            <button onclick="updateQuantity('${item.productId}', 1)" class="quantity-btn">+</button>
+          </div>
+          <div class="cart-item-total">
+            $${(item.price * item.quantity).toFixed(2)}
+          </div>
+          <button onclick="removeFromCart('${item.productId}')" class="remove-btn">×</button>
+        </div>
+      `).join('');
+      
+      updateCartSummary();
+    }
+
+    function updateQuantity(productId, change) {
+      const item = cart.find(item => item.productId === productId);
+      if (!item) return;
+      
+      item.quantity += change;
+      
+      if (item.quantity <= 0) {
+        removeFromCart(productId);
+        return;
+      }
+      
+      saveCart();
+      renderCart();
+      updateCartCount();
+    }
+
+    function removeFromCart(productId) {
+      cart = cart.filter(item => item.productId !== productId);
+      saveCart();
+      renderCart();
+      updateCartCount();
+    }
+
+    function clearCart() {
+      if (confirm('Are you sure you want to clear your cart?')) {
+        cart = [];
+        saveCart();
+        renderCart();
+        updateCartCount();
+      }
+    }
+
+    function updateCartSummary() {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const shipping = subtotal > 50 ? 0 : 9.99;
+      const tax = subtotal * 0.08;
+      const total = subtotal + shipping + tax;
+      
+      document.getElementById('cart-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+      document.getElementById('cart-shipping').textContent = shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
+      document.getElementById('cart-tax').textContent = `$${tax.toFixed(2)}`;
+      document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+    }
+
+    // Checkout Functions
+    function proceedToCheckout() {
+      if (cart.length === 0) {
+        alert('Your cart is empty!');
+        return;
+      }
+      
+      closeModal('cart-modal');
+      renderCheckout();
+      openModal('checkout-modal');
+    }
+
+    function goBackToCart() {
+      closeModal('checkout-modal');
+      openCart();
+    }
+
+    function renderCheckout() {
+      const itemsList = document.getElementById('checkout-items-list');
+      
+      itemsList.innerHTML = cart.map(item => `
+        <div class="checkout-item">
+          <img src="${item.imageUrl}" alt="${item.name}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+          <div class="checkout-item-details">
+            <div class="checkout-item-name">${item.name}</div>
+            <div class="checkout-item-quantity">Qty: ${item.quantity}</div>
+          </div>
+          <div class="checkout-item-total">$${(item.price * item.quantity).toFixed(2)}</div>
+        </div>
+      `).join('');
+      
+      updateCheckoutSummary();
+    }
+
+    function updateCheckoutSummary() {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const shipping = subtotal > 50 ? 0 : 9.99;
+      const tax = subtotal * 0.08;
+      const total = subtotal + shipping + tax;
+      
+      document.getElementById('checkout-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+      document.getElementById('checkout-shipping').textContent = shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
+      document.getElementById('checkout-tax').textContent = `$${tax.toFixed(2)}`;
+      document.getElementById('checkout-total').textContent = `$${total.toFixed(2)}`;
+    }
+
+    // Your existing function with MINIMAL fixes
+async function createStripeSession() {
+  const btn = document.getElementById('stripe-checkout-btn');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Processing...';
+  
+  try {
+    // Validate form
+    const email = document.getElementById('checkout-email').value.trim(); // ✅ ADD .trim()
+    const firstName = document.getElementById('checkout-first-name').value.trim(); // ✅ ADD .trim()
+    const lastName = document.getElementById('checkout-last-name').value.trim(); // ✅ ADD .trim()
+    const address1 = document.getElementById('checkout-address1').value.trim(); // ✅ ADD .trim()
+    const city = document.getElementById('checkout-city').value.trim(); // ✅ ADD .trim()
+    const state = document.getElementById('checkout-state').value.trim(); // ✅ ADD .trim()
+    const zip = document.getElementById('checkout-zip').value.trim(); // ✅ ADD .trim()
+    const country = document.getElementById('checkout-country').value;
+    
+    if (!email || !firstName || !lastName || !address1 || !city || !zip) {
+      alert('Please fill in all required fields');
+      btn.disabled = false;
+      btn.innerHTML = '🔒 Pay Securely with Stripe';
+      return;
+    }
+    
+    // ✅ ADD EMAIL VALIDATION
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert('Please enter a valid email address (e.g., your@email.com)');
+      btn.disabled = false;
+      btn.innerHTML = '🔒 Pay Securely with Stripe';
+      return;
+    }
+    
+    // Prepare order data
+    const orderData = {
+      items: cart.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity
+      })),
+      customer: {
+        email: email,
+        name: `${firstName} ${lastName}`,
+        phone: document.getElementById('checkout-phone').value.trim() // ✅ ADD .trim()
+      },
+      shippingAddress: {
+        name: `${firstName} ${lastName}`,
+        line1: address1,
+        line2: document.getElementById('checkout-address2').value.trim(), // ✅ ADD .trim()
+        city: city,
+        state: state,
+        postal_code: zip,
+        country: country
+      }
+    };
+    
+    console.log('🛒 Creating Stripe session with data:', orderData);
+    
+    // Create checkout session
+    const response = await fetch('/api/checkout/create-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(orderData)
+    });
+    
+    const result = await response.json();
+    
+    if (result.success && result.sessionUrl) {
+      console.log('✅ Redirecting to Stripe Checkout:', result.sessionUrl);
+      
+      // ✅ FIXED: Direct redirect to Stripe Checkout page!
+      window.location.href = result.sessionUrl;
+      
+    } else {
+      console.error('❌ Session creation failed:', result.error);
+      alert(`Checkout failed: ${result.error}`);
+    }
+    
+  } catch (error) {
+    console.error('❌ Checkout error:', error);
+    alert('Checkout failed. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🔒 Pay Securely with Stripe';
+  }
+}
+
+    // Product Variants Functions - NEW
+    function setupProductVariants(product) {
+      const variantsContainer = document.getElementById('product-variants');
+      const sizeGroup = document.getElementById('size-selector-group');
+      const colorGroup = document.getElementById('color-selector-group');
+      const styleGroup = document.getElementById('style-selector-group');
+      
+      // Reset all selectors
+      sizeGroup.style.display = 'none';
+      colorGroup.style.display = 'none';
+      styleGroup.style.display = 'none';
+      variantsContainer.style.display = 'none';
+      
+      if (!product.variants || !Array.isArray(product.variants) || product.variants.length === 0) {
+        console.log('No variants available for this product');
+        return;
+      }
+      
+      console.log('Setting up variants:', product.variants);
+      variantsContainer.style.display = 'block';
+      
+      // Extract unique sizes, colors, and styles
+      const sizes = [...new Set(product.variants.filter(v => v.size).map(v => v.size))];
+      const colors = [...new Set(product.variants.filter(v => v.color).map(v => v.color))];
+      const styles = [...new Set(product.variants.filter(v => v.name && !v.size && !v.color).map(v => v.name))];
+      
+      console.log('Extracted variants:', { sizes, colors, styles });
+      
+      // Setup size selector
+      if (sizes.length > 0) {
+        const sizeSelector = document.getElementById('size-selector');
+        sizeSelector.innerHTML = '<option value="">Select Size</option>' + 
+          sizes.map(size => `<option value="${size}">${size}</option>`).join('');
+        sizeGroup.style.display = 'block';
+      }
+      
+      // Setup color selector
+      if (colors.length > 0) {
+        const colorSelector = document.getElementById('color-selector');
+        colorSelector.innerHTML = '<option value="">Select Color</option>' + 
+          colors.map(color => `<option value="${color}">${color}</option>`).join('');
+        colorGroup.style.display = 'block';
+      }
+      
+      // Setup style selector (for CJ variants that don't have size/color)
+      if (styles.length > 0) {
+        const styleSelector = document.getElementById('style-selector');
+        styleSelector.innerHTML = '<option value="">Select Style</option>' + 
+          styles.map(style => `<option value="${style}">${style}</option>`).join('');
+        styleGroup.style.display = 'block';
+      }
+      
+      // Store variants for selection
+      window.currentProductVariants = product.variants;
+    }
+
+    function updateSelectedVariant() {
+      if (!window.currentProductVariants) return;
+      
+      const selectedSize = document.getElementById('size-selector')?.value || '';
+      const selectedColor = document.getElementById('color-selector')?.value || '';
+      const selectedStyle = document.getElementById('style-selector')?.value || '';
+      
+      console.log('Selected options:', { selectedSize, selectedColor, selectedStyle });
+      
+      // Find matching variant
+      let matchingVariant = null;
+      
+      for (const variant of window.currentProductVariants) {
+        const sizeMatch = !selectedSize || variant.size === selectedSize;
+        const colorMatch = !selectedColor || variant.color === selectedColor;
+        const styleMatch = !selectedStyle || variant.name === selectedStyle;
+        
+        if (sizeMatch && colorMatch && styleMatch) {
+          matchingVariant = variant;
+          break;
+        }
+      }
+      
+      console.log('Matching variant:', matchingVariant);
+      
+      // Update price and image if variant found
+      if (matchingVariant) {
+        const priceContainer = document.getElementById('variant-price');
+        const priceValue = document.getElementById('variant-price-value');
+        
+        if (matchingVariant.price && matchingVariant.price > 0) {
+          priceValue.textContent = matchingVariant.price.toFixed(2);
+          priceContainer.style.display = 'block';
+        }
+        
+        // Update main image if variant has specific image
+        if (matchingVariant.image) {
+          document.getElementById('product-modal-main-img').src = matchingVariant.image;
+        }
+        
+        // Store selected variant
+        window.selectedVariant = matchingVariant;
+      } else {
+        document.getElementById('variant-price').style.display = 'none';
+        window.selectedVariant = null;
+      }
+    }
+
+    // Product Modal Functions
     function openProductModal(productId) {
       console.log('🔍 Opening product modal for ID:', productId);
       
-      // Find the product in our current products array
       const product = currentProducts.find(p => p.id === productId);
       
       if (!product) {
@@ -373,78 +1068,284 @@
       }
       
       console.log('📦 Product found:', product);
+      console.log('🖼️ Product images:', product.images);
+      console.log('🎨 Product variants:', product.variants);
+      console.log('⭐ Product reviews:', product.reviewsData);
+      console.log('📊 Database fields:', Object.keys(product));
       
-      // Populate modal with product data
+      // Populate modal with enhanced product data
       document.getElementById('product-modal-title').textContent = product.name;
-      document.getElementById('product-modal-img').src = product.imageUrl || 'https://via.placeholder.com/400x300?text=Product';
-      document.getElementById('product-modal-img').alt = product.name;
+      
+      // Main image
+      const mainImg = document.getElementById('product-modal-main-img');
+      mainImg.src = (product.images && product.images[0]) || product.imageUrl || 'https://via.placeholder.com/400x350?text=Product';
+      mainImg.alt = product.name;
+      
+      // Handle multiple images (CJ products have multiple images)
+      setupProductImages(product);
+      
+      // Setup product variants - NEW
+      setupProductVariants(product);
+      
+      // Price
       document.getElementById('product-modal-price').textContent = `$${parseFloat(product.price).toFixed(2)}`;
-      document.getElementById('product-modal-description').textContent = product.description || `High-quality ${product.name} with excellent reviews and fast shipping.`;
-      document.getElementById('product-modal-supplier').textContent = product.supplier || 'Amazon';
+      
+      // Enhanced description
+      const description = generateEnhancedDescription(product);
+      document.getElementById('product-modal-description').innerHTML = description;
+      
+      // Features (if available)
+      setupProductFeatures(product);
+      
+      // Customer-facing details only
       document.getElementById('product-modal-trending').textContent = `🔥 ${product.trendingScore}`;
-      document.getElementById('product-modal-subreddit').textContent = `r/${product.subreddit}`;
-      document.getElementById('product-modal-profit').textContent = `$${parseFloat(product.profit || 0).toFixed(2)}`;
-      document.getElementById('product-modal-supplier-price').textContent = `$${parseFloat(product.supplierPrice || 0).toFixed(2)}`;
+      document.getElementById('product-modal-subreddit').textContent = `${product.subreddit}`;
+      document.getElementById('product-modal-shipping').textContent = getShippingInfo(product);
+      document.getElementById('product-modal-stock').textContent = 'In Stock ✅';
       
       // Store current product for actions
       window.currentProduct = product;
-      
+      // Setup reviews section
+setupProductReviews(product);
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.isAdmin) {
+  setTimeout(() => {
+    addImageDeleteButtons();
+  }, 100);
+}
       // Open the modal
       openModal('product-modal');
     }
-    
-    // Product action functions
-    function buyProduct() {
-      if (window.currentProduct) {
-        console.log('🛒 Buying product:', window.currentProduct.name);
-        alert(`🛒 Redirecting to purchase ${window.currentProduct.name}...`);
-        // Here you would redirect to Amazon/CJ or your checkout
+
+    function setupProductImages(product) {
+      const thumbnailsContainer = document.getElementById('product-thumbnails');
+      
+      let images = [];
+      if (product.images && Array.isArray(product.images)) {
+        images = product.images;
+      } else if (product.imageUrl) {
+        images = [product.imageUrl];
+      }
+      
+      if (images.length > 1) {
+        thumbnailsContainer.style.display = 'flex'; // Changed to flex for better layout
+        thumbnailsContainer.innerHTML = images.map((img, index) => 
+          `<img src="${img}" alt="Product image ${index + 1}" 
+                class="thumbnail-img ${index === 0 ? 'active' : ''}" 
+                onclick="switchMainImage('${img}')"
+                style="width: 60px; height: 60px; object-fit: contain; border-radius: 4px; margin: 4px; cursor: pointer; border: 2px solid ${index === 0 ? 'var(--premium-gold)' : 'transparent'};">`
+        ).join('');
+      } else {
+        thumbnailsContainer.style.display = 'none';
       }
     }
+
+    function switchMainImage(imageUrl) {
+  document.getElementById('product-modal-main-img').src = imageUrl;
+  
+  document.querySelectorAll('.thumbnail-img').forEach(thumb => {
+    thumb.style.border = thumb.src === imageUrl ? '2px solid var(--premium-gold)' : '2px solid transparent';
+  });
+  
+  // UPDATE DELETE BUTTON FOR CURRENT IMAGE - NEW CODE
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  if (user.isAdmin && window.currentProduct) {
+    updateMainImageDeleteButton(imageUrl);
+  }
+}
+
+// ADD THIS NEW FUNCTION
+function updateMainImageDeleteButton(currentImageUrl) {
+  const mainImageContainer = document.querySelector('.main-image-container');
+  const existingBtn = mainImageContainer.querySelector('.delete-main-image-btn');
+  
+  if (existingBtn) {
+    // Find which image index this is
+    const imageIndex = window.currentProduct.images.findIndex(img => img === currentImageUrl);
     
+    // Update button text and onclick
+    existingBtn.innerHTML = `🗑️ Delete Image #${imageIndex + 1}`;
+    existingBtn.onclick = () => deleteProductImage(window.currentProduct.id, imageIndex);
+    
+    console.log(`Updated delete button for image #${imageIndex + 1}`);
+  }
+}
+
+    function generateEnhancedDescription(product) {
+      const isRealCJ = product.supplier === 'cjdropshipping';
+      const isSpocket = product.supplier === 'spocket';
+      const baseDescription = product.description || `High-quality ${product.name} with excellent customer reviews.`;
+      
+      let enhancedDesc = baseDescription;
+      
+      if (isRealCJ) {
+        enhancedDesc += `<br><br><strong>✅ Quality Verified:</strong> Direct from manufacturer with quality guarantee.`;
+        enhancedDesc += `<br><strong>🌎 Global Shipping:</strong> Fast delivery worldwide from CJ warehouses.`;
+      } else if (isSpocket) {
+        enhancedDesc += `<br><br><strong>⚡ Lightning Fast:</strong> 2-7 day shipping from US/EU suppliers.`;
+        enhancedDesc += `<br><strong>🇺🇸 Premium Quality:</strong> No Chinese packaging, professional service.`;
+      } else {
+        enhancedDesc += `<br><br><strong>⚡ Prime Eligible:</strong> Fast, free shipping.`;
+        enhancedDesc += `<br><strong>⭐ Highly Rated:</strong> Thousands of verified customer reviews.`;
+      }
+      
+      return enhancedDesc;
+    }
+
+    function setupProductFeatures(product) {
+      const featuresContainer = document.getElementById('product-features');
+      const featuresList = document.getElementById('product-features-list');
+      
+      const features = generateProductFeatures(product.name, product.supplier);
+      
+      if (features.length > 0) {
+        featuresList.innerHTML = features.map(feature => `<li>${feature}</li>`).join('');
+        featuresContainer.style.display = 'block';
+      } else {
+        featuresContainer.style.display = 'none';
+      }
+    }
+
+    function generateProductFeatures(productName, supplier) {
+      const name = productName.toLowerCase();
+      let features = [];
+      
+      if (name.includes('speaker') || name.includes('bluetooth')) {
+        features = [
+          'Wireless Bluetooth 5.0 connectivity',
+          'High-quality stereo sound',
+          'Long-lasting battery life',
+          'Water-resistant design',
+          'Easy pairing with all devices'
+        ];
+      } else if (name.includes('watch') || name.includes('omega')) {
+        features = [
+          'Precision quartz movement',
+          'Water-resistant to 50m',
+          'Scratch-resistant crystal',
+          'Comfortable leather strap',
+          'Classic elegant design'
+        ];
+      } else if (name.includes('shorts') || name.includes('workwear')) {
+        features = [
+          'Durable cotton blend fabric',
+          'Multiple functional pockets',
+          'Comfortable loose fit',
+          'Reinforced stress points',
+          'Machine washable'
+        ];
+      } else if (name.includes('dog') || name.includes('pet')) {
+        features = [
+          'Made from safe, non-toxic materials',
+          'Durable construction for active pets',
+          'Easy to clean and maintain',
+          'Suitable for all dog sizes',
+          'Recommended by veterinarians'
+        ];
+      } else {
+        features = [
+          'Premium quality construction',
+          'Easy to use and maintain',
+          'Excellent value for money',
+          'Fast and reliable performance',
+          'Backed by customer satisfaction guarantee'
+        ];
+      }
+      
+      return features.slice(0, 4);
+    }
+
+    function getShippingInfo(product) {
+      if (product.supplier === 'cjdropshipping') {
+        return '🌎 Global Shipping (7-15 days)';
+      } else if (product.supplier === 'spocket') {
+        return '⚡ US/EU Shipping (2-7 days)';
+      } else {
+        return '📦 Standard Shipping';
+      }
+    }
+
     function addToWishlist() {
       if (window.currentProduct) {
         console.log('❤️ Adding to wishlist:', window.currentProduct.name);
-        alert(`❤️ Added ${window.currentProduct.name} to wishlist!`);
-        // Here you would add to user's wishlist
+        
+        let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        
+        const alreadyExists = wishlist.some(item => item.id === window.currentProduct.id);
+        
+        if (!alreadyExists) {
+          wishlist.push({
+            id: window.currentProduct.id,
+            name: window.currentProduct.name,
+            price: window.currentProduct.price,
+            imageUrl: window.currentProduct.imageUrl,
+            addedAt: new Date().toISOString()
+          });
+          
+          localStorage.setItem('wishlist', JSON.stringify(wishlist));
+          
+          const btn = document.getElementById('wishlist-btn');
+          const originalText = btn.innerHTML;
+          btn.innerHTML = '✅ Saved!';
+          btn.style.background = 'rgba(76, 175, 80, 0.2)';
+          
+          setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+          }, 2000);
+          
+          console.log('✅ Added to wishlist successfully');
+        } else {
+          alert('This item is already in your wishlist!');
+        }
       }
     }
-    
+
     function shareProduct() {
       if (window.currentProduct) {
         console.log('📱 Sharing product:', window.currentProduct.name);
         
+        const shareData = {
+          title: window.currentProduct.name,
+          text: `Check out this ${window.currentProduct.name} for $${window.currentProduct.price}!`,
+          url: window.location.href
+        };
+        
         if (navigator.share) {
-          navigator.share({
-            title: window.currentProduct.name,
-            text: `Check out this ${window.currentProduct.name} for $${window.currentProduct.price}`,
-            url: window.location.href
-          });
+          navigator.share(shareData);
         } else {
-          // Fallback for browsers without Web Share API
-          const url = window.location.href;
-          navigator.clipboard.writeText(`${window.currentProduct.name} - ${url}`);
-          alert('📱 Product link copied to clipboard!');
+          const shareText = `${shareData.title} - ${shareData.text} ${shareData.url}`;
+          navigator.clipboard.writeText(shareText).then(() => {
+            const btn = document.getElementById('share-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '✅ Copied!';
+            
+            setTimeout(() => {
+              btn.innerHTML = originalText;
+            }, 2000);
+          });
         }
       }
     }
-    
-    // Close modals when clicking outside the content
+
+    // Close modals when clicking outside
     window.onclick = function(event) {
       const modals = document.getElementsByClassName('modal');
       for (let i = 0; i < modals.length; i++) {
         if (event.target === modals[i]) {
-          modals[i].style.display = 'none';
-          document.body.style.overflow = 'auto';
+          const modalId = modals[i].id;
+          if (modalId === 'product-modal') {
+            closeProductModal();
+          } else {
+            closeModal(modalId);
+          }
         }
       }
     };
-  </script>
-  
-  <script>
+
+    // Load products and display
     console.log('🚀 LOADING PRODUCTS WITH REAL IMAGES AND CJ DATA');
     
-    // Load products immediately
     (function() {
       console.log('📡 Making fetch request to /api/automation/products');
       
@@ -464,8 +1365,10 @@
           if (data.success && data.products && data.products.length > 0) {
             console.log('✅ Processing products...');
             
-            // Store products globally for modal use
-            currentProducts = data.products;
+            currentProducts = data.products.map(p => ({
+              ...p,
+              id: p.id 
+            }));
             
             const productGrid = document.getElementById('product-grid');
             console.log('🎯 Product grid element:', productGrid);
@@ -475,33 +1378,55 @@
               return;
             }
             
-            const html = data.products.map((product, index) => {
+            const html = currentProducts.map((product, index) => { // Use currentProducts
               console.log(`Processing product ${index}:`, product.name, '$' + product.price);
               console.log(`Image URL:`, product.imageUrl);
               console.log(`Supplier:`, product.supplier);
               
-              // Determine if it's a CJ product (real image) or Amazon (enhanced image)
-              const supplierBadge = product.supplier === 'cjdropshipping' ? 
-                '<div class="supplier-badge cj-badge">🏭 CJ Real Product</div>' : 
-                '<div class="supplier-badge amazon-badge">🛒 Amazon Enhanced</div>';
+              const supplierBadge = '';
               
               return `
-                <div class="product-card" onclick="openProductModal('${product.id}')" style="cursor: pointer;">
+                <div class="product-card">
                   ${supplierBadge}
-                  <div class="product-image">
-                    <img src="${product.imageUrl || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop&crop=center'}" 
+                  <div class="product-image" onclick="openProductModal('${product.id}')" style="cursor: pointer;">
+                    <img src="${(product.images && product.images[0]) || product.imageUrl || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop&crop=center'}"
                          alt="${product.name}" 
                          style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;" 
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <div style="display:none; font-size:2rem; text-align:center; padding:50px;">🛍️</div>
                   </div>
                   <div class="product-info">
-                    <div class="product-name" style="white-space: normal; overflow: visible; text-overflow: unset; height: auto; line-height: 1.3;">${product.name}</div>
+                    <div class="product-name" onclick="openProductModal('${product.id}')" style="cursor: pointer; white-space: normal; overflow: visible; text-overflow: unset; height: auto; line-height: 1.3;">${product.name}</div>
                     <div class="product-price">$${parseFloat(product.price).toFixed(2)}</div>
-                    <div class="product-rating">🔥 ${product.trendingScore} | r/${product.subreddit}</div>
+                    <div class="product-rating">🔥 ${product.trendingScore || product.analytics?.trendingScore || 0} | ${product.subreddit || product.redditSource?.subreddit || 'N/A'}</div>
+<div class="product-category" style="font-size: 0.8rem; color: #888; margin-top: 2px;">${product.category || 'other'}</div>
                     <div class="product-supplier" style="font-size: 0.8rem; color: #aaa; margin-top: 4px;">
-                      ${product.supplier === 'cjdropshipping' ? '🏭 CJ Dropshipping' : '🛒 Amazon Associates'}
+                      ${product.reviewsData && product.reviewsData.reviews && product.reviewsData.reviews.length > 0 ? `
+  <div class="product-reviews" style="margin-top: 8px; padding: 6px; background: rgba(212,175,55,0.1); border-radius: 4px;">
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <span style="color: #ffd700; font-size: 0.85rem;">⭐ ${product.reviewsData.overallRating}</span>
+      <span style="font-size: 0.75rem; color: #888;">(${product.reviewsData.totalReviews} reviews)</span>
+    </div>
+  </div>
+` : ''}
+                      Fast & Reliable Shipping
                     </div>
+                    
+                    <!-- ADD TO CART BUTTON -->
+                    <button class="add-to-cart-btn" onclick="addToCart('${product.id}')" style="
+                      width: 100%; 
+                      margin-top: 8px; 
+                      padding: 8px; 
+                      background: var(--premium-gold); 
+                      color: #000; 
+                      border: none; 
+                      border-radius: 4px; 
+                      font-weight: 600; 
+                      cursor: pointer;
+                      transition: all 0.2s ease;
+                    " onmouseover="this.style.background='#e6c547'" onmouseout="this.style.background='var(--premium-gold)'">
+                      🛒 Add to Cart
+                    </button>
                   </div>
                 </div>
               `;
@@ -510,12 +1435,11 @@
             console.log('📝 Generated HTML length:', html.length);
             
             productGrid.innerHTML = html;
-            console.log('✅ PRODUCTS DISPLAYED WITH REAL CJ + ENHANCED AMAZON IMAGES!');
+            console.log('✅ PRODUCTS DISPLAYED WITH REAL CJ + SPOCKET SUPPLIERS!');
             
-            // Log summary
-            const cjProducts = data.products.filter(p => p.supplier === 'cjdropshipping').length;
-            const amazonProducts = data.products.filter(p => p.supplier === 'amazon').length;
-            console.log(`📊 SUMMARY: ${cjProducts} CJ products (real images) + ${amazonProducts} Amazon products (enhanced images)`);
+            const cjProducts = currentProducts.filter(p => p.supplier === 'cjdropshipping').length;
+            const spocketProducts = currentProducts.filter(p => p.supplier === 'spocket').length;
+            console.log(`📊 SUMMARY: ${cjProducts} CJ products + ${spocketProducts} Spocket products`);
             
           } else {
             console.error('❌ NO VALID PRODUCTS DATA');
@@ -533,6 +1457,738 @@
           }
         });
     })();
+
+    async function loadYouTubeVideos() {
+  try {
+    console.log('🎬 Loading YouTube videos...');
+    
+    const response = await fetch('/api/automation/videos?limit=6');
+    const data = await response.json();
+    
+    console.log('📊 Video data received:', data);
+    
+    if (data.success && data.videos && data.videos.length > 0) {
+      console.log(`✅ Loaded ${data.videos.length} YouTube videos`);
+      
+      // DEBUG: Log first video structure
+      console.log('🔍 First video structure:', JSON.stringify(data.videos[0], null, 2));
+      
+      // Find the recommended videos section
+      const recommendedSection = document.querySelector('.recommended-videos .video-grid');
+      
+      if (recommendedSection) {
+        // SIMPLIFIED VALIDATION - Accept any video with basic info
+        const validVideos = data.videos.filter(video => {
+          console.log('🔍 Checking video:', video.title, 'Has data:', {
+            hasTitle: !!video.title,
+            hasThumbnail: !!video.thumbnailUrl,
+            hasVideoId: !!video.videoId,
+            hasYouTubeData: !!video.youtube,
+            hasEmbedUrl: !!video.embedUrl
+          });
+          
+          // Accept video if it has basic info
+          return video.title && (video.thumbnailUrl || video.embedUrl || video.videoId);
+        });
+        
+        console.log(`📺 Processing ${validVideos.length} valid videos`);
+        
+        if (validVideos.length === 0) {
+          console.log('❌ No valid videos found. Raw video data:');
+          data.videos.forEach((video, i) => {
+            console.log(`Video ${i}:`, {
+              title: video.title,
+              thumbnailUrl: video.thumbnailUrl,
+              videoId: video.videoId,
+              embedUrl: video.embedUrl,
+              youtube: video.youtube
+            });
+          });
+        }
+        
+        // Generate HTML for valid videos with FLEXIBLE data handling
+        const youtubeHTML = validVideos.map(video => {
+          // Use whatever data we have available
+          const videoId = video.videoId || (video.youtube && video.youtube.videoId) || 'unknown';
+          const thumbnailUrl = video.thumbnailUrl || (video.youtube && video.youtube.thumbnailUrl) || 'https://via.placeholder.com/320x180?text=Video';
+          const title = video.title || 'Untitled Video';
+          const embedUrl = video.embedUrl || video.videoUrl || `https://www.youtube.com/embed/${videoId}`;
+          const channelTitle = (video.youtube && video.youtube.channelTitle) || 'YouTube';
+          const duration = (video.youtube && video.youtube.duration) || '0:00';
+          const viewCount = (video.youtube && video.youtube.viewCount) || 0;
+          const publishedAt = (video.youtube && video.youtube.publishedAt) || video.createdAt || new Date();
+          
+          return `
+            <div class="video-card youtube-video" onclick="playVideo('${embedUrl}', '${title.replace(/'/g, "&apos;")}')">
+              <div class="video-card-thumbnail">
+                <img src="${thumbnailUrl}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://via.placeholder.com/320x180?text=Video'">
+                <div class="video-card-duration">${duration}</div>
+                <div class="youtube-badge" style="position: absolute; top: 8px; right: 8px; background: #ff0000; color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px;">📺</div>
+              </div>
+              <div class="video-card-info">
+                <div class="channel-avatar-small">
+                  <div style="display: flex; align-items: center; justify-content: center; font-size: 16px;">🎬</div>
+                </div>
+                <div class="video-card-details">
+                  <h4 class="video-card-title">${title}</h4>
+                  <div class="video-card-channel">${channelTitle}</div>
+                  <div class="video-card-stats">${formatViewCount(viewCount)} views • ${formatDate(publishedAt)}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+        // Add to existing content
+        recommendedSection.innerHTML = youtubeHTML + recommendedSection.innerHTML;
+        
+        console.log('✅ YouTube videos added to homepage');
+        console.log('📝 Generated HTML length:', youtubeHTML.length);
+      } else {
+        console.log('❌ Recommended videos section not found');
+      }
+    } else {
+      console.log('ℹ️ No videos found to display');
+    }
+    
+  } catch (error) {
+    console.error('❌ Error loading YouTube videos:', error);
+  }
+}
+
+// SIMPLIFIED VIDEO PLAYER
+function playVideo(videoUrl, title) {
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.innerHTML = `
+    <div class="modal-content" style="max-width: 800px; width: 90%;">
+      <div class="modal-header">
+        <h3 class="modal-title">${title}</h3>
+        <button class="close-modal" onclick="closeVideoModal(this)">×</button>
+      </div>
+      <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+        <iframe 
+          src="${videoUrl}" 
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  document.body.classList.add('modal-open');
+}
+
+// ALSO ADD THIS FUNCTION for regular videos:
+function playRegularVideo(videoUrl, title) {
+  // Create modal for regular videos
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.innerHTML = `
+    <div class="modal-content" style="max-width: 800px; width: 90%;">
+      <div class="modal-header">
+        <h3 class="modal-title">${title}</h3>
+        <button class="close-modal" onclick="closeVideoModal(this)">×</button>
+      </div>
+      <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+        <video 
+          src="${videoUrl}" 
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+          controls 
+          autoplay>
+        </video>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  document.body.classList.add('modal-open');
+}
+
+    // Close video modal
+    function closeVideoModal(button) {
+      const modal = button.closest('.modal');
+      if (modal) {
+        modal.remove();
+      }
+      document.body.classList.remove('modal-open');
+    }
+
+    // Format view count
+    function formatViewCount(count) {
+      if (!count && count !== 0) return '0'; // Handle undefined or null
+      if (count >= 1000000) return Math.floor(count / 1000000) + 'M';
+      if (count >= 1000) return Math.floor(count / 1000) + 'K';
+      return count.toString();
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      if (!dateString) return 'some time ago';
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffTime = Math.abs(now - date);
+      const diffSeconds = Math.floor(diffTime / 1000);
+      const diffMinutes = Math.floor(diffSeconds / 60);
+      const diffHours = Math.floor(diffMinutes / 60);
+      const diffDays = Math.floor(diffHours / 24);
+      const diffMonths = Math.floor(diffDays / 30);
+      const diffYears = Math.floor(diffDays / 365);
+
+      if (diffYears > 0) return `${diffYears} year${diffYears > 1 ? 's' : ''} ago`;
+      if (diffMonths > 0) return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
+      if (diffDays > 0) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+      if (diffHours > 0) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      if (diffMinutes > 0) return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+      return `Just now`;
+    }
+
+    // CALL THIS AFTER LOADING PRODUCTS (add this line after your product loading):
+    loadYouTubeVideos();
+
+    // LOGIN FORM HANDLER - ADD THIS
+document.getElementById('login-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  
+  try {
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+  localStorage.setItem('token', data.token);
+  localStorage.setItem('user', JSON.stringify(data.user));
+  
+  const signInBtn = document.querySelector('.sign-in');
+signInBtn.textContent = `Welcome, ${data.user.name}`;
+signInBtn.onclick = signOut; // Change click to sign out
+  closeModal('login-modal');
+  
+  console.log('✅ Login successful:', data.user);
+  
+  // CHECK ADMIN STATUS IMMEDIATELY AFTER LOGIN
+  if (data.user.isAdmin) {
+    setTimeout(() => {
+      showAdminControls();
+    }, 500);
+  }
+} else {
+      alert('Login failed: ' + (data.errors?.[0]?.msg || 'Unknown error'));
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    alert('Login failed. Please try again.');
+  }
+});
+
+// SIGNUP FORM HANDLER - ADD THIS TOO
+document.getElementById('signup-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const name = document.getElementById('signup-name').value;
+  const email = document.getElementById('signup-email').value;
+  const password = document.getElementById('signup-password').value;
+  const confirmPassword = document.getElementById('signup-confirm').value;
+  
+  if (password !== confirmPassword) {
+    alert('Passwords do not match');
+    return;
+  }
+  
+  try {
+    const response = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name, email, password })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      document.querySelector('.sign-in').textContent = `Welcome, ${data.user.name}`;
+      closeModal('signup-modal');
+      
+      console.log('✅ Signup successful:', data.user);
+    } else {
+      alert('Signup failed: ' + (data.errors?.[0]?.msg || 'Unknown error'));
+    }
+  } catch (error) {
+    console.error('Signup error:', error);
+    alert('Signup failed. Please try again.');
+  }
+});
+// PASSWORD RESET FUNCTION
+function resetPassword() {
+  const email = prompt('Enter your email address to receive a reset link:');
+  if (!email) return;
+  
+  fetch('/api/auth/forgot-password', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert('Password reset link sent to your email! Check your inbox.');
+      closeModal('login-modal');
+      
+      // FOR TESTING ONLY - REMOVE IN PRODUCTION:
+      if (data.resetLink) {
+        console.log('🔗 Reset link:', data.resetLink);
+        if (confirm('For testing: Do you want to open the reset link now?')) {
+          window.open(data.resetLink, '_blank');
+        }
+      }
+    } else {
+      alert('Reset failed: ' + data.error);
+    }
+  })
+  .catch(error => {
+    console.error('Reset error:', error);
+    alert('Reset failed. Please try again.');
+  });
+}
+
+// ADMIN SYSTEM - ADD THIS ENTIRE SECTION
+async function checkAdminStatus() {
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  
+  console.log('Checking admin status for user:', user);
+  
+  if (user.isAdmin) {
+    console.log('✅ ADMIN ACCESS GRANTED');
+    showAdminControls();
+  } else {
+    console.log('❌ Not admin user');
+  }
+}
+
+// SIGN OUT FUNCTION
+function signOut() {
+  if (confirm('Are you sure you want to sign out?')) {
+    // Clear stored data
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('videoshop-cart'); // Optional: clear cart too
+    localStorage.removeItem('wishlist'); // Optional: clear wishlist too
+    
+    // Reset UI
+    document.querySelector('.sign-in').textContent = 'Sign In';
+    document.querySelector('.sign-in').onclick = () => openModal('login-modal');
+    
+    // Remove admin badge if exists
+    const adminBadge = document.querySelector('.admin-badge');
+    if (adminBadge) {
+      adminBadge.remove();
+    }
+    
+    // Remove admin delete buttons
+    document.querySelectorAll('.delete-btn, .delete-image-btn, .delete-main-image-btn').forEach(btn => {
+      btn.remove();
+    });
+    
+    // Update cart count
+    cart = [];
+    updateCartCount();
+    
+    alert('You have been signed out successfully');
+    
+    // Optionally reload the page
+    // location.reload();
+  }
+}
+
+// SIGN OUT FUNCTION
+function signOut() {
+  if (confirm('Are you sure you want to sign out?')) {
+    // Clear stored data
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('videoshop-cart'); // Optional: clear cart too
+    localStorage.removeItem('wishlist'); // Optional: clear wishlist too
+    
+    // Reset UI
+    document.querySelector('.sign-in').textContent = 'Sign In';
+    document.querySelector('.sign-in').onclick = () => openModal('login-modal');
+    
+    // Remove admin badge if exists
+    const adminBadge = document.querySelector('.admin-badge');
+    if (adminBadge) {
+      adminBadge.remove();
+    }
+    
+    // Remove admin delete buttons
+    document.querySelectorAll('.delete-btn, .delete-image-btn, .delete-main-image-btn').forEach(btn => {
+      btn.remove();
+    });
+    
+    // Update cart count
+    cart = [];
+    updateCartCount();
+    
+    alert('You have been signed out successfully');
+    
+    // Optionally reload the page
+    // location.reload();
+  }
+}
+function showAdminControls() {
+  console.log('🚀 Showing admin controls...');
+  
+  // Add admin badge to header
+  const userActions = document.querySelector('.user-actions');
+  if (userActions && !document.querySelector('.admin-badge')) {
+    const adminBadge = document.createElement('span');
+    adminBadge.className = 'admin-badge';
+    adminBadge.innerHTML = '👑 ADMIN';
+    adminBadge.style.cssText = `
+  background: #ff0000;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  margin-right: 4px;
+`;
+    userActions.insertBefore(adminBadge, userActions.firstChild);
+    // Add sign out button for admin
+if (!document.querySelector('.sign-out-btn')) {
+  const signOutBtn = document.createElement('button');
+  signOutBtn.className = 'sign-out-btn';
+  signOutBtn.innerHTML = '🚪 Sign Out';
+  signOutBtn.onclick = signOut;
+  signOutBtn.style.cssText = `
+  background: #333333;
+  color: white;
+  padding: 2px 6px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  margin-right: 4px;
+  cursor: pointer;
+`;
+  userActions.insertBefore(signOutBtn, userActions.firstChild);
+}
+  }
+  
+  // Add delete buttons to product cards
+  setTimeout(() => {
+    addDeleteButtonsToProducts();
+  }, 1000);
+}
+
+function addDeleteButtonsToProducts() {
+  console.log('🗑️ Adding delete buttons to products...');
+  console.log('Current products:', currentProducts.length);
+  
+  document.querySelectorAll('.product-card').forEach((card, index) => {
+    const product = currentProducts[index];
+    if (!product) return;
+    
+    // Don't add button if already exists
+    if (card.querySelector('.delete-btn')) return;
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.innerHTML = '🗑️';
+    deleteBtn.onclick = (e) => {
+      e.stopPropagation();
+      deleteProduct(product.id);
+    };
+    deleteBtn.style.cssText = `
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #ff0000;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    `;
+    card.style.position = 'relative';
+    card.appendChild(deleteBtn);
+    console.log('✅ Added delete button to:', product.name.substring(0, 30));
+  });
+}
+
+function addImageDeleteButtons() {
+  console.log('🖼️ Adding image delete buttons...');
+  
+  // Add delete buttons to thumbnail images
+  document.querySelectorAll('.thumbnail-img').forEach((img, index) => {
+    // Don't add button if already exists
+    if (img.parentElement.querySelector('.delete-image-btn')) return;
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete-image-btn';
+    deleteBtn.innerHTML = '❌';
+    deleteBtn.onclick = (e) => {
+      e.stopPropagation();
+      deleteProductImage(window.currentProduct.id, index);
+    };
+    deleteBtn.style.cssText = `
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: #ff0000;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      font-size: 12px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+    
+    // Make thumbnail container relative
+    img.parentElement.style.position = 'relative';
+    img.parentElement.appendChild(deleteBtn);
+  });
+  
+  // Add delete button to main image too
+  const mainImageContainer = document.querySelector('.main-image-container');
+  if (mainImageContainer && !mainImageContainer.querySelector('.delete-main-image-btn')) {
+    const deleteMainBtn = document.createElement('button');
+    deleteMainBtn.className = 'delete-main-image-btn';
+    deleteMainBtn.innerHTML = '🗑️ Delete Image #1';
+deleteMainBtn.onclick = () => deleteProductImage(window.currentProduct.id, 0);
+    deleteMainBtn.style.cssText = `
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ff0000;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 14px;
+      z-index: 20;
+    `;
+    
+    mainImageContainer.style.position = 'relative';
+    mainImageContainer.appendChild(deleteMainBtn);
+  }
+}
+
+async function deleteProductImage(productId, imageIndex) {
+  if (!confirm(`Are you sure you want to delete image #${imageIndex + 1}?`)) return;
+  
+  const token = localStorage.getItem('token');
+  
+  try {
+    const response = await fetch(`/api/automation/products/${productId}/images/${imageIndex}`, {
+      method: 'DELETE',
+      headers: {
+        'x-auth-token': token
+      }
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      alert('Image deleted successfully!');
+      closeProductModal();
+      location.reload();
+    } else {
+      alert('Failed to delete image: ' + data.error);
+    }
+  } catch (error) {
+    console.error('Delete image error:', error);
+    alert('Failed to delete image');
+  }
+}
+
+async function deleteProduct(productId) {
+  if (!confirm('Are you sure you want to delete this product?')) return;
+  
+  const token = localStorage.getItem('token');
+  
+  try {
+    const response = await fetch(`/api/automation/products/${productId}`, {
+      method: 'DELETE',
+      headers: {
+        'x-auth-token': token
+      }
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      alert('Product deleted successfully!');
+      location.reload();
+    } else {
+      alert('Failed to delete product: ' + data.error);
+    }
+  } catch (error) {
+    console.error('Delete error:', error);
+    alert('Failed to delete product');
+  }
+}
+
+// Call admin check on page load
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(() => {
+    checkAdminStatus();
+  }, 2000); // Wait for products to load
+});
+function cleanReviewData(reviews) {
+ return reviews
+   .filter(review => {
+     // Filter out reviews that contain JavaScript/CSS garbage
+     const comment = review.comment || '';
+     
+     // Skip reviews with JavaScript artifacts
+     if (comment.includes('function(') || 
+         comment.includes('P.when(') || 
+         comment.includes('.execute(') ||
+         comment.includes('A.toggleExpander') ||
+         comment.includes('review-text-read-more') ||
+         comment.includes('focus-visible') ||
+         comment.includes('outl') ||
+         comment.length < 20) {
+       return false;
+     }
+     
+     return true;
+   })
+   .map(review => ({
+     ...review,
+     // Clean the date format
+     date: review.date ? cleanReviewDate(review.date) : null,
+     // Clean the reviewer name
+     reviewer: review.reviewer === 'Amazon Customer' ? 'Anonymous Customer' : review.reviewer
+   }));
+}
+
+function cleanReviewDate(dateString) {
+  if (!dateString) return null;
+  
+  // Remove the T17:00:00.000Z timezone stuff
+  if (dateString.includes('T') && dateString.includes('.000Z')) {
+    const cleanDate = dateString.split('T')[0]; // Get just the date part
+    try {
+      const date = new Date(cleanDate);
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+    } catch (error) {
+      return dateString; // Return original if parsing fails
+    }
+  }
+  
+  // If it's already a clean date string, return as is
+  return dateString;
+}
+// Reviews Modal Functions - Updated to hide exact counts
+function setupProductReviews(product) {
+  const reviewsSection = document.getElementById('product-reviews-section');
+  const reviewsPreview = document.getElementById('product-reviews-preview');
+  
+  if (product.reviewsData && product.reviewsData.totalReviews > 0) {
+    reviewsSection.style.display = 'block';
+    
+    // Show preview WITHOUT exact count
+    const previewText = product.reviewsData.totalReviews > 8 ? `reviews available` : `${product.reviewsData.totalReviews} reviews`;
+    
+    reviewsPreview.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div>
+          <span style="color: #ffd700; font-size: 1.2rem;">⭐ ${product.reviewsData.overallRating}</span>
+          <span style="margin-left: 8px; color: #888;">(${previewText})</span>
+        </div>
+        <div style="flex: 1; color: #aaa; font-size: 0.9rem;">
+          "${product.reviewsData.reviews.find(r => r.comment && !r.comment.includes('function') && r.comment.length > 20)?.comment?.substring(0, 80) || 'Verified customer reviews'}..."
+        </div>
+      </div>
+    `;
+    
+    // Store reviews for modal
+    window.currentProductReviews = product.reviewsData;
+  } else {
+    reviewsSection.style.display = 'none';
+  }
+}
+
+function openReviewsModal() {
+  if (!window.currentProductReviews) return;
+  
+  const reviews = window.currentProductReviews;
+const cleanedReviews = cleanReviewData(reviews.reviews);
+  const modalTitle = document.getElementById('reviews-modal-title');
+  const modalContent = document.getElementById('reviews-modal-content');
+  
+  // NO COUNT in modal title
+  modalTitle.textContent = `Customer Reviews`;
+  
+  // Generate reviews HTML WITHOUT showing exact count
+  const reviewsHTML = `
+    <div style="margin-bottom: 20px; text-align: center;">
+      <div style="font-size: 2rem; color: #ffd700; margin-bottom: 8px;">⭐ ${reviews.overallRating}</div>
+      <div style="color: #888;">verified reviews from customers</div>
+    </div>
+    
+    <div class="reviews-list">
+      ${cleanedReviews.map((review, index) => `
+        <div class="review-item" style="margin-bottom: 20px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="color: #ffd700;">${'⭐'.repeat(review.rating)}</span>
+            <span style="font-weight: bold; color: var(--text-color);">${review.reviewer}</span>
+            ${review.verified ? '<span style="color: #4CAF50; font-size: 0.8rem;">✅ Verified</span>' : ''}
+          </div>
+          <p style="margin: 0; line-height: 1.5; color: #ddd;">${review.comment}</p>
+          ${review.date ? `<div style="font-size: 0.8rem; color: #888; margin-top: 8px;">${review.date}</div>` : ''}
+          ${review.helpful > 0 ? `<div style="font-size: 0.8rem; color: #888; margin-top: 4px;">👍 ${review.helpful} found helpful</div>` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+  
+  modalContent.innerHTML = reviewsHTML;
+  openModal('reviews-modal');
+  
+  // FORCE THE MODAL TO BE VISIBLE IN CURRENT VIEWPORT
+  setTimeout(() => {
+    const reviewsModal = document.getElementById('reviews-modal');
+    if (reviewsModal) {
+      reviewsModal.scrollIntoView({ behavior: 'instant', block: 'center' });
+    }
+  }, 50);
+}
   </script>
 </body>
 </html>

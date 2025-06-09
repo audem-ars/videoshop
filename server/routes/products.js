@@ -56,17 +56,120 @@ router.post('/', [authMiddleware, adminMiddleware], async (req, res) => {
 });
 
 // @route   GET api/products
-// @desc    Get all products
+// @desc    Get all products with full data including images and variants
 // @access  Public
 router.get('/', async (req, res) => {
   try {
     const products = await Product.find()
       .sort({ isPromoted: -1, createdAt: -1 });
+    
+    // Transform to include all needed fields for frontend
+    const transformedProducts = products.map(product => ({
+      id: product._id.toString(),
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      supplierPrice: product.pricing?.supplierPrice || 0,
+      profit: product.pricing?.markupAmount || 0,
+      category: product.category,
+      subreddit: product.redditSource?.subreddit || 'general',
+      trendingScore: product.analytics?.trendingScore || 0,
+      createdAt: product.createdAt,
+      realProduct: product.source === 'reddit_automation',
+      imageUrl: product.imageUrl,
       
-    res.json(products);
+      // FULL IMAGES ARRAY - This was missing!
+      images: product.images && Array.isArray(product.images) ? product.images : [product.imageUrl],
+      
+      // PRODUCT VARIANTS - This was missing!
+      variants: product.variants && Array.isArray(product.variants) ? product.variants : [],
+      
+      // SPECIFICATIONS
+      specifications: product.specifications || {},
+      
+      // SUPPLIER INFO
+      supplier: product.supplier?.platform || (product.source === 'reddit_automation' ? 'automated' : 'manual'),
+      supplierData: product.supplier || {},
+      
+      // ADDITIONAL FRONTEND DATA
+      inStock: product.inStock !== false,
+      hasVariants: product.variants && Array.isArray(product.variants) && product.variants.length > 0,
+      isPromoted: product.isPromoted || false,
+      
+      // KEEP LEGACY FIELD FOR COMPATIBILITY
+      amazonProductId: product.supplier?.productId || product.inventory?.sku
+    }));
+      
+    res.json(transformedProducts);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
+  }
+});
+
+// @route   GET api/products/automation
+// @desc    Get automation products specifically with full data
+// @access  Public
+router.get('/automation', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 8;
+    
+    const products = await Product.find({
+      source: 'reddit_automation',
+      status: 'active'
+    })
+    .sort({ 'analytics.trendingScore': -1, createdAt: -1 })
+    .limit(limit);
+
+    // Transform products to include all needed fields
+    const transformedProducts = products.map(product => ({
+      id: product._id.toString(),
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      supplierPrice: product.pricing?.supplierPrice || 0,
+      profit: product.pricing?.markupAmount || 0,
+      category: product.category,
+      subreddit: product.redditSource?.subreddit || 'unknown',
+      trendingScore: product.analytics?.trendingScore || 0,
+      createdAt: product.createdAt,
+      realProduct: true,
+      imageUrl: product.imageUrl,
+      
+      // FULL IMAGES ARRAY - Fixed!
+      images: product.images && Array.isArray(product.images) ? product.images : [product.imageUrl],
+      
+      // PRODUCT VARIANTS - Fixed!
+      variants: product.variants && Array.isArray(product.variants) ? product.variants : [],
+      
+      // SPECIFICATIONS
+      specifications: product.specifications || {},
+      
+      // SUPPLIER INFO
+      supplier: product.supplier?.platform || 'unknown',
+      supplierData: product.supplier || {},
+      
+      // ADDITIONAL DATA
+      inStock: product.inStock !== false,
+      hasVariants: product.variants && Array.isArray(product.variants) && product.variants.length > 0,
+      
+      // COMPATIBILITY
+      amazonProductId: product.supplier?.productId || product.inventory?.sku
+    }));
+
+    res.json({
+      success: true,
+      products: transformedProducts,
+      count: transformedProducts.length
+    });
+    
+  } catch (err) {
+    console.error('Automation products error:', err.message);
+    res.status(500).json({
+      success: false,
+      error: 'Server error',
+      products: []
+    });
   }
 });
 
@@ -91,8 +194,26 @@ router.get('/featured', async (req, res) => {
         .sort({ 'ratings.1': -1, createdAt: -1 })
         .limit(4 - promotedProducts.length);
     }
+    
+    const allProducts = [...promotedProducts, ...regularProducts];
+    
+    // Transform with full data
+    const transformedProducts = allProducts.map(product => ({
+      id: product._id.toString(),
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      category: product.category,
+      imageUrl: product.imageUrl,
+      images: product.images && Array.isArray(product.images) ? product.images : [product.imageUrl],
+      variants: product.variants && Array.isArray(product.variants) ? product.variants : [],
+      inStock: product.inStock,
+      isPromoted: product.isPromoted,
+      hasVariants: product.variants && Array.isArray(product.variants) && product.variants.length > 0,
+      supplier: product.supplier?.platform || 'manual'
+    }));
       
-    res.json([...promotedProducts, ...regularProducts]);
+    res.json(transformedProducts);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
@@ -100,7 +221,7 @@ router.get('/featured', async (req, res) => {
 });
 
 // @route   GET api/products/:id
-// @desc    Get product by ID
+// @desc    Get product by ID with full data
 // @access  Public
 router.get('/:id', async (req, res) => {
   try {
@@ -111,7 +232,37 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ msg: 'Product not found' });
     }
     
-    res.json(product);
+    // Transform with full data
+    const transformedProduct = {
+      id: product._id.toString(),
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      supplierPrice: product.pricing?.supplierPrice || 0,
+      category: product.category,
+      imageUrl: product.imageUrl,
+      
+      // FULL DATA
+      images: product.images && Array.isArray(product.images) ? product.images : [product.imageUrl],
+      variants: product.variants && Array.isArray(product.variants) ? product.variants : [],
+      specifications: product.specifications || {},
+      
+      // OTHER DATA
+      inStock: product.inStock,
+      isPromoted: product.isPromoted,
+      ratings: product.ratings,
+      averageRating: product.averageRating,
+      hasVariants: product.variants && Array.isArray(product.variants) && product.variants.length > 0,
+      supplier: product.supplier?.platform || 'manual',
+      supplierData: product.supplier || {},
+      
+      // REDDIT DATA IF AVAILABLE
+      subreddit: product.redditSource?.subreddit,
+      trendingScore: product.analytics?.trendingScore || 0,
+      realProduct: product.source === 'reddit_automation'
+    };
+    
+    res.json(transformedProduct);
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {

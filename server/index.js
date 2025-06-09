@@ -1,4 +1,12 @@
 // server/index.js - Complete server with your .env configuration
+// For Vercel serverless compatibility
+if (process.env.VERCEL) {
+  // Skip file system operations on Vercel
+  console.log('Running on Vercel - skipping file system setup');
+} else {
+  // Your existing file system code
+}
+
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -64,6 +72,12 @@ const productsDir = path.join(uploadsDir, 'products');
 
 // Automation routes
 app.use('/api/automation', automationRoutes);
+app.use('/api/checkout', require('./routes/checkout'));
+app.use('/api/auth', require('./routes/auth'));  // ADD THIS LINE
+
+app.get('/shop', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'shop.html'));
+});
 
 // Helper function to generate unique filename
 function generateUniqueFilename(originalName) {
@@ -291,7 +305,6 @@ app.get('/api/products/test', (req, res) => {
   res.json({ msg: 'Products route works' });
 });
 
-// Function to generate placeholder pages
 function generatePlaceholderPage(title, description) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -305,7 +318,7 @@ function generatePlaceholderPage(title, description) {
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="ambient-background"></div>
+  <!-- REMOVED: <div class="ambient-background"></div> -->
   <header>
     <div class="hamburger-menu" id="hamburger-menu">
       <div class="hamburger-line"></div>
@@ -370,18 +383,29 @@ function generatePlaceholderPage(title, description) {
   </div>
   <div class="sidebar-overlay"></div>
   <script src="/js/main.js"></script>
-  <script src="/js/subtle-effect.js"></script>
 </body>
 </html>`;
 }
 
 // Routes for sidebar pages
 app.get('/trending', (req, res) => {
-  res.send(generatePlaceholderPage('Trending', 'Discover popular videos that are currently getting lots of views and engagement.'));
+  const trendingPath = path.join(publicDir, 'trending.html');
+  
+  if (fs.existsSync(trendingPath)) {
+    res.sendFile(trendingPath);
+  } else {
+    res.send(generatePlaceholderPage('Trending', 'Real trending products discovered from Reddit'));
+  }
 });
 
 app.get('/subscriptions', (req, res) => {
-  res.send(generatePlaceholderPage('Subscriptions', 'Your subscriptions feed shows videos from channels you\'ve subscribed to.'));
+  const subscriptionsPath = path.join(publicDir, 'subscriptions.html');
+  
+  if (fs.existsSync(subscriptionsPath)) {
+    res.sendFile(subscriptionsPath);
+  } else {
+    res.send(generatePlaceholderPage('Subscriptions', 'Your subscriptions feed shows videos from channels you\'ve subscribed to.'));
+  }
 });
 
 app.get('/shop', (req, res) => {
@@ -389,7 +413,13 @@ app.get('/shop', (req, res) => {
 });
 
 app.get('/library', (req, res) => {
-  res.send(generatePlaceholderPage('Library', 'Your personal library stores all your saved videos, playlists, and watch history.'));
+  const libraryPath = path.join(publicDir, 'library.html');
+  
+  if (fs.existsSync(libraryPath)) {
+    res.sendFile(libraryPath);
+  } else {
+    res.send(generatePlaceholderPage('Library', 'Your personal library stores all your saved videos, playlists, and watch history.'));
+  }
 });
 
 app.get('/history', (req, res) => {

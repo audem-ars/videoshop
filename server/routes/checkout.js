@@ -14,7 +14,12 @@ const autoFulfillment = new AutoFulfillment();
 // @access  Public
 router.post('/create-session', async (req, res) => {
   try {
+    console.log('📦 Received checkout data:', req.body);
+    
     const { items, customer, shippingAddress } = req.body;
+    console.log('🔍 Items:', items);
+    console.log('👤 Customer:', customer);
+    console.log('🏠 Shipping:', shippingAddress);
     
     console.log('🛒 Creating checkout session for:', items.length, 'items');
     
@@ -41,6 +46,10 @@ router.post('/create-session', async (req, res) => {
         error: 'Complete shipping address is required' 
       });
     }
+    
+    // Generate unique order number
+    const orderNumber = `VS-${Date.now()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
+    console.log('🔢 Generated order number:', orderNumber);
     
     // Get product details and calculate totals
     const orderItems = [];
@@ -111,7 +120,7 @@ router.post('/create-session', async (req, res) => {
           currency: 'usd',
           product_data: {
             name: 'Shipping',
-            description: 'Standard shipping'
+            description: 'Standard shipping worldwide'
           },
           unit_amount: Math.round(shipping * 100)
         },
@@ -137,21 +146,33 @@ router.post('/create-session', async (req, res) => {
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: lineItems,
-      success_url: `${process.env.DOMAIN}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `http://localhost:5000/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.DOMAIN}/checkout/cancel`,
       customer_email: customer.email,
       shipping_address_collection: {
-        allowed_countries: ['US', 'CA', 'GB', 'AU'] // Expand as needed
+        allowed_countries: [
+          'US', 'CA', 'GB', 'AU', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'CH', 'AT',
+          'SE', 'NO', 'DK', 'FI', 'IE', 'PT', 'GR', 'PL', 'CZ', 'HU', 'SK', 'SI',
+          'HR', 'BG', 'RO', 'LT', 'LV', 'EE', 'LU', 'MT', 'CY', 'JP', 'KR', 'SG',
+          'MY', 'TH', 'ID', 'PH', 'VN', 'IN', 'AU', 'NZ', 'BR', 'MX', 'AR', 'CL',
+          'CO', 'PE', 'ZA', 'EG', 'AE', 'SA', 'IL', 'TR', 'RU', 'UA', 'CN', 'HK',
+          'TW'
+        ]
       },
       metadata: {
         orderType: 'dropshipping',
         itemCount: items.length.toString(),
-        totalProfit: totalProfit.toFixed(2)
+        totalProfit: totalProfit.toFixed(2),
+        orderNumber: orderNumber
       }
     });
     
+    console.log('✅ Stripe session created:', session.id);
+    console.log('🔗 Session URL:', session.url);
+    
     // Pre-create order record (will be completed on successful payment)
     const order = new Order({
+      orderNumber: orderNumber, // ✅ FIXED: Added missing orderNumber!
       stripeSessionId: session.id,
       customer: {
         email: customer.email,
@@ -184,7 +205,7 @@ router.post('/create-session', async (req, res) => {
     res.json({
       success: true,
       sessionId: session.id,
-      sessionUrl: session.url,
+      sessionUrl: session.url, // ✅ IMPORTANT: Frontend needs to redirect to this URL!
       orderNumber: order.orderNumber
     });
     

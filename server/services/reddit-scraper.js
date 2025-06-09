@@ -60,7 +60,7 @@ class RedditProductScraper {
         if (!postData.title || postData.removed_by_category) continue;
         
         // Analyze if post is about a REAL product
-        const productInfo = this.analyzeRealProduct(postData, subreddit);
+        const productInfo = await this.analyzeRealProduct(postData, subreddit); // MODIFIED: Added await
         
         if (productInfo.isRealProduct) {
           products.push(productInfo);
@@ -76,7 +76,7 @@ class RedditProductScraper {
   }
 
   // Analyze if post is about a REAL product (not random discussion)
-  analyzeRealProduct(postData, subreddit) {
+  async analyzeRealProduct(postData, subreddit) { // MODIFIED: Added async
     const title = postData.title.toLowerCase();
     const selfText = (postData.selftext || '').toLowerCase();
     const url = postData.url || '';
@@ -145,6 +145,9 @@ class RedditProductScraper {
     
     // Extract REAL product name
     const productName = this.extractProductName(title, selfText);
+
+    // Get real comments (add after the redditData object)
+    const comments = await this.getProductComments(postData.id, postData.permalink, 3); // MODIFIED: Added this line
     
     return {
       isRealProduct: true,
@@ -157,11 +160,12 @@ class RedditProductScraper {
         author: postData.author,
         upvotes: postData.ups,
         downvotes: postData.downs,
-        comments: postData.num_comments,
+        numComments: postData.num_comments, // MODIFIED: Renamed from 'comments'
         engagementScore: engagementScore,
         createdAt: new Date(postData.created_utc * 1000),
         url: postData.url,
-        permalink: `https://reddit.com${postData.permalink}`
+        permalink: `https://reddit.com${postData.permalink}`,
+        comments: comments  // MODIFIED: ADDED THIS LINE
       },
       productInfo: {
         extractedName: productName,
@@ -170,6 +174,47 @@ class RedditProductScraper {
         estimatedCategory: this.categorizeProduct(productName)
       }
     };
+  }
+
+  // ADD THIS NEW FUNCTION (don't change existing ones)
+  async getProductComments(postId, permalink, limit = 3) {
+    try {
+      // Use the permalink to get comments (it already has the full path)
+      const commentsUrl = `https://www.reddit.com${permalink}.json?limit=${limit}&sort=top`;
+      
+      const response = await axios.get(commentsUrl, { 
+        headers: this.headers,
+        timeout: 10000 
+      });
+      
+      const comments = [];
+      const commentData = response.data[1]?.data?.children || [];
+      
+      for (const commentPost of commentData.slice(0, limit)) {
+        const comment = commentPost.data;
+        
+        // Skip deleted/removed comments
+        if (!comment.body || comment.body === '[deleted]' || comment.body === '[removed]') {
+          continue;
+        }
+        
+        // Only include comments with decent upvotes
+        if (comment.ups >= 5) {
+          comments.push({
+            text: comment.body.substring(0, 200), // Limit length
+            upvotes: comment.ups,
+            username: comment.author,
+            createdAt: new Date(comment.created_utc * 1000)
+          });
+        }
+      }
+      
+      return comments;
+      
+    } catch (error) {
+      console.error(`Error fetching comments for ${postId}:`, error.message);
+      return [];
+    }
   }
 
   // Extract actual product name from Reddit post

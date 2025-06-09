@@ -1,4 +1,4 @@
-// server/models/Product.js - Fixed for Amazon + CJ
+// server/models/Product.js - Fixed for CJ + Spocket
 const mongoose = require('mongoose');
 
 const ProductSchema = new mongoose.Schema({
@@ -21,17 +21,16 @@ const ProductSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  // ADD SUPPORT FOR MULTIPLE IMAGES
+  images: {
+    type: [String],
+    default: function() {
+      return this.imageUrl ? [this.imageUrl] : [];
+    }
+  },
   category: {
     type: String,
     required: true,
-    enum: [
-      // Your existing categories
-      'toothpaste', 'face wash', 'body care', 'skin care', 'hair care',
-      // New automation categories
-      'electronics', 'home & garden', 'tools & hardware', 'clothing', 
-      'sports & outdoors', 'automotive', 'books & media', 'food & beverage', 
-      'pet supplies', 'other'
-    ]
   },
   inStock: {
     type: Boolean,
@@ -60,14 +59,15 @@ const ProductSchema = new mongoose.Schema({
     comments: Number,
     engagementScore: Number,
     permalink: String,
-    discoveredAt: Date
+    discoveredAt: Date,
+    realProduct: Boolean
   },
   
-  // Supplier information (for dropshipping) - FIXED ENUM
+  // Supplier information (for dropshipping) - ADDED SPOCKET
   supplier: {
     platform: {
       type: String,
-      enum: ['amazon', 'cjdropshipping', 'aliexpress', 'alibaba', 'dhgate', 'other'] // ADDED AMAZON + CJ
+      enum: ['cjdropshipping', 'spocket', 'aliexpress', 'alibaba', 'dhgate', 'other'] // REMOVED AMAZON, ADDED SPOCKET
     },
     productId: String,
     supplierUrl: String,
@@ -76,15 +76,37 @@ const ProductSchema = new mongoose.Schema({
     seller: {
       name: String,
       rating: Number,
-      years: Number
+      years: Number,
+      location: String
     },
     shipping: {
       free: Boolean,
       days: Number,
-      cost: Number
+      cost: Number,
+      estimatedDays: String,
+      methods: [String],
+      trackingAvailable: Boolean,
+      expressAvailable: Boolean,
+      domesticShipping: Boolean
     },
-    specifications: mongoose.Schema.Types.Mixed
+    specifications: mongoose.Schema.Types.Mixed,
+    soldCount: Number,
+    inStock: Boolean
   },
+  
+  // Product variants (for products with multiple options)
+  variants: [{
+    id: String,
+    name: String,
+    sku: String,
+    price: Number,
+    image: String,
+    color: String,
+    size: String,
+    inStock: Boolean,
+    stockQuantity: Number,
+    attributes: mongoose.Schema.Types.Mixed
+  }],
   
   // Pricing automation
   pricing: {
@@ -188,6 +210,37 @@ const ProductSchema = new mongoose.Schema({
     }
   },
 
+  // Product specifications and features
+  specifications: mongoose.Schema.Types.Mixed,
+  
+  // Quality flags
+  qualityFlags: {
+    realProduct: {
+      type: Boolean,
+      default: false
+    },
+    realImages: {
+      type: Boolean,
+      default: false
+    },
+    realPrices: {
+      type: Boolean,
+      default: false
+    },
+    fastShipping: {
+      type: Boolean,
+      default: false
+    },
+    autoFulfillment: {
+      type: Boolean,
+      default: false
+    },
+    premiumQuality: {
+      type: Boolean,
+      default: false
+    }
+  },
+
   // Your existing ratings system
   ratings: [{
     user: {
@@ -208,6 +261,30 @@ const ProductSchema = new mongoose.Schema({
       default: Date.now
     }
   }],
+
+  // Amazon/external reviews data
+  reviewsData: {
+    reviews: [{
+      rating: Number,
+      comment: String,
+      reviewer: String,
+      verified: Boolean,
+      date: Date
+    }],
+    overallRating: {
+      type: Number,
+      min: 0,
+      max: 5
+    },
+    totalReviews: {
+      type: Number,
+      default: 0
+    },
+    source: {
+      type: String,
+      default: 'amazon'
+    }
+  },
 
   createdAt: {
     type: Date,
@@ -236,6 +313,14 @@ ProductSchema.pre('save', function(next) {
   // Calculate conversion rate
   if (this.analytics.clicks > 0) {
     this.analytics.conversionRate = ((this.analytics.orders / this.analytics.clicks) * 100).toFixed(2);
+  }
+  
+  // Ensure images array includes imageUrl
+  if (this.imageUrl && (!this.images || !this.images.includes(this.imageUrl))) {
+    this.images = this.images || [];
+    if (!this.images.includes(this.imageUrl)) {
+      this.images.unshift(this.imageUrl); // Add to beginning
+    }
   }
   
   next();
@@ -271,6 +356,14 @@ ProductSchema.virtual('isTrending').get(function() {
   if (!this.analytics.trendingScore) return false;
   
   return this.analytics.trendingScore > 100; // Threshold for "trending"
+});
+
+// Get main image (first in images array or imageUrl)
+ProductSchema.virtual('mainImage').get(function() {
+  if (this.images && this.images.length > 0) {
+    return this.images[0];
+  }
+  return this.imageUrl;
 });
 
 // Static methods for automation queries
@@ -314,6 +407,14 @@ ProductSchema.statics.findTopPerformers = function(limit = 20) {
     'analytics.conversionRate': -1 
   })
   .limit(limit);
+};
+
+// Find products by supplier platform
+ProductSchema.statics.findBySupplier = function(platform) {
+  return this.find({
+    'supplier.platform': platform,
+    status: 'active'
+  });
 };
 
 // Instance methods
@@ -373,5 +474,6 @@ ProductSchema.index({ 'analytics.trendingScore': -1 });
 ProductSchema.index({ 'inventory.sku': 1 });
 ProductSchema.index({ status: 1, 'automation.isAutomated': 1 });
 ProductSchema.index({ createdAt: -1 });
+ProductSchema.index({ 'supplier.platform': 1 });
 
 module.exports = mongoose.model('Product', ProductSchema);

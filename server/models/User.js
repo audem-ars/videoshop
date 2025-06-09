@@ -1,4 +1,3 @@
-
 // server/models/User.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
@@ -26,6 +25,13 @@ const UserSchema = new mongoose.Schema({
   profileImage: {
     type: String,
     default: ''
+  },
+  // ADD THESE 2 FIELDS FOR SECURE PASSWORD RESET:
+  resetPasswordToken: {
+    type: String
+  },
+  resetPasswordExpires: {
+    type: Date
   },
   createdAt: {
     type: Date,

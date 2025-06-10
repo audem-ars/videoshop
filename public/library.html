@@ -11,13 +11,115 @@
 </head>
 <body>
   <header>
-    <!-- ✅ FIXED: Clean hamburger menu -->
     <div class="hamburger-menu" id="hamburger-menu">
       <div class="hamburger-line"></div>
       <div class="hamburger-line"></div>
       <div class="hamburger-line"></div>
+      <!-- Monthly Leaderboard - Fixed Position Top Right -->
+      <div class="monthly-leaderboard" style="position: fixed; top: 80px; right: 20px; width: 320px; z-index: 1000; background: rgba(0, 0, 0, 0.9); border: 2px solid var(--accent-color); border-radius: 15px; padding: 15px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);">
+        <div style="text-align: center; margin-bottom: 12px;">
+          <h3 style="color: var(--accent-color); margin: 0; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            🏆 Monthly Champions
+            <button onclick="toggleLeaderboard()" style="background: none; border: none; color: var(--accent-color); font-size: 1rem; cursor: pointer; padding: 2px;">📍</button>
+          </h3>
+          <div style="font-size: 0.8rem; color: #FF6B6B; font-weight: bold;">
+            🗓️ <span id="monthTimer">00:00:00:00</span>
+          </div>
+          <div style="font-size: 0.7rem; color: var(--accent-color);">
+            🎁 Prize: $100 Gift Card!
+          </div>
+        </div>
+        
+        <div id="leaderboardContent" style="max-height: 300px; overflow-y: auto;">
+          <!-- Top 3 Compact -->
+          <div id="leaderSlot1" style="display: flex; align-items: center; gap: 8px; padding: 8px; margin-bottom: 6px; background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.1)); border-radius: 8px; border: 2px solid #FFD700;">
+            <div style="font-size: 1.2rem;">🥇</div>
+            <div style="flex: 1; font-size: 0.85rem;">
+              <div id="leader1Name" style="font-weight: bold; color: #FFD700;">No Champion Yet</div>
+              <div id="leader1Score" style="color: var(--text-color); font-size: 0.75rem;">0 pts</div>
+            </div>
+          </div>
+          
+          <div id="leaderSlot2" style="display: flex; align-items: center; gap: 8px; padding: 6px; margin-bottom: 4px; background: rgba(192, 192, 192, 0.1); border-radius: 6px;">
+            <div style="font-size: 1rem;">🥈</div>
+            <div style="flex: 1; font-size: 0.8rem;">
+              <div id="leader2Name" style="font-weight: bold;">Runner-up</div>
+              <div id="leader2Score" style="color: var(--text-color); font-size: 0.7rem;">0 pts</div>
+            </div>
+          </div>
+          
+          <div id="leaderSlot3" style="display: flex; align-items: center; gap: 8px; padding: 6px; margin-bottom: 8px; background: rgba(205, 127, 50, 0.1); border-radius: 6px;">
+            <div style="font-size: 1rem;">🥉</div>
+            <div style="flex: 1; font-size: 0.8rem;">
+              <div id="leader3Name" style="font-weight: bold;">Third Place</div>
+              <div id="leader3Score" style="color: var(--text-color); font-size: 0.7rem;">0 pts</div>
+            </div>
+          </div>
+          
+          <!-- Remaining slots 4-10 compact -->
+          <div id="leaderSlot4" style="display: flex; align-items: center; gap: 8px; padding: 4px; margin-bottom: 2px; font-size: 0.75rem;">
+            <div style="min-width: 20px; text-align: center; font-weight: bold;">4</div>
+            <div style="flex: 1;">
+              <span id="leader4Name" style="font-weight: bold;">4th</span>
+              <span id="leader4Score" style="color: var(--text-color);"> - 0</span>
+            </div>
+          </div>
+          
+          <div id="leaderSlot5" style="display: flex; align-items: center; gap: 8px; padding: 4px; margin-bottom: 2px; font-size: 0.75rem;">
+            <div style="min-width: 20px; text-align: center; font-weight: bold;">5</div>
+            <div style="flex: 1;">
+              <span id="leader5Name" style="font-weight: bold;">5th</span>
+              <span id="leader5Score" style="color: var(--text-color);"> - 0</span>
+            </div>
+          </div>
+          
+          <div id="leaderSlot6" style="display: flex; align-items: center; gap: 8px; padding: 4px; margin-bottom: 2px; font-size: 0.75rem;">
+            <div style="min-width: 20px; text-align: center; font-weight: bold;">6</div>
+            <div style="flex: 1;">
+              <span id="leader6Name" style="font-weight: bold;">6th</span>
+              <span id="leader6Score" style="color: var(--text-color);"> - 0</span>
+            </div>
+          </div>
+          
+          <div id="leaderSlot7" style="display: flex; align-items: center; gap: 8px; padding: 4px; margin-bottom: 2px; font-size: 0.75rem;">
+            <div style="min-width: 20px; text-align: center; font-weight: bold;">7</div>
+            <div style="flex: 1;">
+              <span id="leader7Name" style="font-weight: bold;">7th</span>
+              <span id="leader7Score" style="color: var(--text-color);"> - 0</span>
+            </div>
+          </div>
+          
+          <div id="leaderSlot8" style="display: flex; align-items: center; gap: 8px; padding: 4px; margin-bottom: 2px; font-size: 0.75rem;">
+            <div style="min-width: 20px; text-align: center; font-weight: bold;">8</div>
+            <div style="flex: 1;">
+              <span id="leader8Name" style="font-weight: bold;">8th</span>
+              <span id="leader8Score" style="color: var(--text-color);"> - 0</span>
+            </div>
+          </div>
+          
+          <div id="leaderSlot9" style="display: flex; align-items: center; gap: 8px; padding: 4px; margin-bottom: 2px; font-size: 0.75rem;">
+            <div style="min-width: 20px; text-align: center; font-weight: bold;">9</div>
+            <div style="flex: 1;">
+              <span id="leader9Name" style="font-weight: bold;">9th</span>
+              <span id="leader9Score" style="color: var(--text-color);"> - 0</span>
+            </div>
+          </div>
+          
+          <div id="leaderSlot10" style="display: flex; align-items: center; gap: 8px; padding: 4px; font-size: 0.75rem;">
+            <div style="min-width: 20px; text-align: center; font-weight: bold;">10</div>
+            <div style="flex: 1;">
+              <span id="leader10Name" style="font-weight: bold;">10th</span>
+              <span id="leader10Score" style="color: var(--text-color);"> - 0</span>
+            </div>
+          </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 8px; padding: 6px; background: rgba(255, 255, 255, 0.05); border-radius: 6px; font-size: 0.7rem; color: var(--text-color);">
+          🎮 Sign in & play to compete!
+        </div>
+      </div>
+
     </div>
-    
     <a href="/" class="logo">Video<span>Shop</span></a>
     <div class="search-bar">
       <input type="text" placeholder="Search collections">
@@ -149,117 +251,6 @@
         </div>
       </div>
 
-      <!-- ✅ FIXED: Monthly Leaderboard - Properly positioned -->
-      <div class="quick-subscribe-section" style="margin-bottom: 40px;">
-        <div class="section-header" style="margin-bottom: 24px;">
-          <h2 class="section-title" style="font-size: 2rem; margin-bottom: 8px; color: var(--accent-color);">🏆 Monthly Champions</h2>
-          <p class="section-subtitle" style="color: var(--text-color); font-size: 1.1rem;">Compete for the $100 gift card!</p>
-        </div>
-        
-        <div class="monthly-leaderboard" style="width: 100%; max-width: 600px; margin: 0 auto; background: rgba(0, 0, 0, 0.9); border: 2px solid var(--accent-color); border-radius: 15px; padding: 20px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);">
-          <div style="text-align: center; margin-bottom: 15px;">
-            <h3 style="color: var(--accent-color); margin: 0; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-              🏆 Monthly Champions
-              <button onclick="toggleLeaderboard()" style="background: none; border: none; color: var(--accent-color); font-size: 1rem; cursor: pointer; padding: 2px;">📍</button>
-            </h3>
-            <div style="font-size: 0.9rem; color: #FF6B6B; font-weight: bold;">
-              🗓️ <span id="monthTimer">00:00:00:00</span> remaining
-            </div>
-            <div style="font-size: 0.8rem; color: var(--accent-color);">
-              🎁 Prize: $100 Gift Card!
-            </div>
-          </div>
-          
-          <div id="leaderboardContent" style="max-height: 400px; overflow-y: auto;">
-            <!-- Top 3 Compact -->
-            <div id="leaderSlot1" style="display: flex; align-items: center; gap: 8px; padding: 8px; margin-bottom: 6px; background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.1)); border-radius: 8px; border: 2px solid #FFD700;">
-              <div style="font-size: 1.2rem;">🥇</div>
-              <div style="flex: 1; font-size: 0.85rem;">
-                <div id="leader1Name" style="font-weight: bold; color: #FFD700;">No Champion Yet</div>
-                <div id="leader1Score" style="color: var(--text-color); font-size: 0.75rem;">0 pts</div>
-              </div>
-            </div>
-            
-            <div id="leaderSlot2" style="display: flex; align-items: center; gap: 8px; padding: 6px; margin-bottom: 4px; background: rgba(192, 192, 192, 0.1); border-radius: 6px;">
-              <div style="font-size: 1rem;">🥈</div>
-              <div style="flex: 1; font-size: 0.8rem;">
-                <div id="leader2Name" style="font-weight: bold;">Runner-up</div>
-                <div id="leader2Score" style="color: var(--text-color); font-size: 0.7rem;">0 pts</div>
-              </div>
-            </div>
-            
-            <div id="leaderSlot3" style="display: flex; align-items: center; gap: 8px; padding: 6px; margin-bottom: 8px; background: rgba(205, 127, 50, 0.1); border-radius: 6px;">
-              <div style="font-size: 1rem;">🥉</div>
-              <div style="flex: 1; font-size: 0.8rem;">
-                <div id="leader3Name" style="font-weight: bold;">Third Place</div>
-                <div id="leader3Score" style="color: var(--text-color); font-size: 0.7rem;">0 pts</div>
-              </div>
-            </div>
-            
-            <!-- Remaining slots 4-10 compact -->
-            <div id="leaderSlot4" style="display: flex; align-items: center; gap: 8px; padding: 4px; margin-bottom: 2px; font-size: 0.75rem;">
-              <div style="min-width: 20px; text-align: center; font-weight: bold;">4</div>
-              <div style="flex: 1;">
-                <span id="leader4Name" style="font-weight: bold;">4th</span>
-                <span id="leader4Score" style="color: var(--text-color);"> - 0</span>
-              </div>
-            </div>
-            
-            <div id="leaderSlot5" style="display: flex; align-items: center; gap: 8px; padding: 4px; margin-bottom: 2px; font-size: 0.75rem;">
-              <div style="min-width: 20px; text-align: center; font-weight: bold;">5</div>
-              <div style="flex: 1;">
-                <span id="leader5Name" style="font-weight: bold;">5th</span>
-                <span id="leader5Score" style="color: var(--text-color);"> - 0</span>
-              </div>
-            </div>
-            
-            <div id="leaderSlot6" style="display: flex; align-items: center; gap: 8px; padding: 4px; margin-bottom: 2px; font-size: 0.75rem;">
-              <div style="min-width: 20px; text-align: center; font-weight: bold;">6</div>
-              <div style="flex: 1;">
-                <span id="leader6Name" style="font-weight: bold;">6th</span>
-                <span id="leader6Score" style="color: var(--text-color);"> - 0</span>
-              </div>
-            </div>
-            
-            <div id="leaderSlot7" style="display: flex; align-items: center; gap: 8px; padding: 4px; margin-bottom: 2px; font-size: 0.75rem;">
-              <div style="min-width: 20px; text-align: center; font-weight: bold;">7</div>
-              <div style="flex: 1;">
-                <span id="leader7Name" style="font-weight: bold;">7th</span>
-                <span id="leader7Score" style="color: var(--text-color);"> - 0</span>
-              </div>
-            </div>
-            
-            <div id="leaderSlot8" style="display: flex; align-items: center; gap: 8px; padding: 4px; margin-bottom: 2px; font-size: 0.75rem;">
-              <div style="min-width: 20px; text-align: center; font-weight: bold;">8</div>
-              <div style="flex: 1;">
-                <span id="leader8Name" style="font-weight: bold;">8th</span>
-                <span id="leader8Score" style="color: var(--text-color);"> - 0</span>
-              </div>
-            </div>
-            
-            <div id="leaderSlot9" style="display: flex; align-items: center; gap: 8px; padding: 4px; margin-bottom: 2px; font-size: 0.75rem;">
-              <div style="min-width: 20px; text-align: center; font-weight: bold;">9</div>
-              <div style="flex: 1;">
-                <span id="leader9Name" style="font-weight: bold;">9th</span>
-                <span id="leader9Score" style="color: var(--text-color);"> - 0</span>
-              </div>
-            </div>
-            
-            <div id="leaderSlot10" style="display: flex; align-items: center; gap: 8px; padding: 4px; font-size: 0.75rem;">
-              <div style="min-width: 20px; text-align: center; font-weight: bold;">10</div>
-              <div style="flex: 1;">
-                <span id="leader10Name" style="font-weight: bold;">10th</span>
-                <span id="leader10Score" style="color: var(--text-color);"> - 0</span>
-              </div>
-            </div>
-          </div>
-          
-          <div style="text-align: center; margin-top: 15px; padding: 8px; background: rgba(255, 255, 255, 0.05); border-radius: 6px; font-size: 0.8rem; color: var(--text-color);">
-            🎮 Sign in & play to compete!
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
 
@@ -358,54 +349,15 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     
-    // ✅ MOBILE HAMBURGER MENU SETUP
+    // Initialize
     document.addEventListener('DOMContentLoaded', function() {
       initGame();
       setupControls();
       loadBestScore();
       loadMonthlyLeaderboard();
       updateMonthTimer();
-      setInterval(updateMonthTimer, 1000);
-      
-      // Setup mobile hamburger menu
-      setupMobileMenu();
+      setInterval(updateMonthTimer, 1000); // Update timer every second
     });
-    
-    function setupMobileMenu() {
-      const hamburgerMenu = document.getElementById('hamburger-menu');
-      const sidebar = document.querySelector('.sidebar');
-      const sidebarOverlay = document.querySelector('.sidebar-overlay');
-      
-      // Toggle sidebar on hamburger click
-      if (hamburgerMenu) {
-        hamburgerMenu.addEventListener('click', function() {
-          sidebar.classList.toggle('mobile-active');
-          sidebarOverlay.classList.toggle('active');
-          document.body.classList.toggle('sidebar-open');
-        });
-      }
-      
-      // Close sidebar when overlay is clicked
-      if (sidebarOverlay) {
-        sidebarOverlay.addEventListener('click', function() {
-          sidebar.classList.remove('mobile-active');
-          sidebarOverlay.classList.remove('active');
-          document.body.classList.remove('sidebar-open');
-        });
-      }
-      
-      // Close sidebar when a sidebar link is clicked (mobile)
-      const sidebarItems = document.querySelectorAll('.sidebar-item');
-      sidebarItems.forEach(item => {
-        item.addEventListener('click', function() {
-          if (window.innerWidth <= 768) {
-            sidebar.classList.remove('mobile-active');
-            sidebarOverlay.classList.remove('active');
-            document.body.classList.remove('sidebar-open');
-          }
-        });
-      });
-    }
     
     function initGame() {
       canvas.width = 800;
@@ -903,112 +855,6 @@
   </script>
 
 <style>
-/* ✅ MOBILE RESPONSIVE STYLES */
-
-/* Mobile hamburger menu */
-.hamburger-menu {
-  display: none;
-  flex-direction: column;
-  cursor: pointer;
-  padding: 8px;
-  z-index: 1001;
-}
-
-.hamburger-line {
-  width: 20px;
-  height: 2px;
-  background: var(--text-color);
-  margin: 2px 0;
-  transition: 0.3s;
-}
-
-/* Mobile sidebar */
-@media (max-width: 768px) {
-  .hamburger-menu {
-    display: flex !important;
-  }
-  
-  .sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    z-index: 1000;
-    width: 250px;
-    overflow-y: auto;
-    background: var(--bg-color);
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 70px;
-  }
-  
-  .sidebar.mobile-active {
-    transform: translateX(0);
-  }
-  
-  .main-content {
-    margin-left: 0 !important;
-    width: 100% !important;
-    padding: 16px !important;
-  }
-  
-  .subscriptions-header {
-    flex-direction: column !important;
-    gap: 20px !important;
-    text-align: center !important;
-    padding: 24px !important;
-  }
-  
-  .subscriptions-stats {
-    gap: 20px !important;
-    justify-content: center !important;
-  }
-  
-  .subscriptions-title {
-    font-size: 2.2rem !important;
-  }
-  
-  #gameCanvas {
-    height: 400px !important;
-  }
-  
-  .game-btn {
-    width: 100% !important;
-    margin-bottom: 8px !important;
-  }
-  
-  .mobile-control-btn {
-    padding: 15px 30px !important;
-    font-size: 1.3rem !important;
-  }
-  
-  .monthly-leaderboard {
-    max-width: 100% !important;
-    margin: 0 !important;
-  }
-}
-
-/* Sidebar overlay */
-.sidebar-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-}
-
-.sidebar-overlay.active {
-  display: block;
-}
-
-body.sidebar-open {
-  overflow: hidden;
-}
-
 /* Simple game styles */
 .modal {
   display: none;
@@ -1166,13 +1012,54 @@ body.modal-open {
   box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
 }
 
+.subscription-card {
+  transition: all 0.3s ease;
+}
+
+.subscription-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .subscriptions-header {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+    padding: 24px;
+  }
+
+  .subscriptions-stats {
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .subscriptions-title {
+    font-size: 2.2rem;
+  }
+
+  #gameCanvas {
+    height: 400px;
+  }
+
+  .game-btn {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+}
+
 @media (max-width: 480px) {
   .subscriptions-title {
-    font-size: 1.8rem !important;
+    font-size: 1.8rem;
   }
-  
+
   #gameCanvas {
-    height: 300px !important;
+    height: 300px;
+  }
+
+  .mobile-control-btn {
+    padding: 15px 30px;
+    font-size: 1.3rem;
   }
 }
 </style>

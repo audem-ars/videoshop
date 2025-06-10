@@ -1669,28 +1669,8 @@ height: calc(100vh - 56px);
     display: flex; /* Show on desktop */
   }
 }
-
-/* MOBILE DEBUG - VISUAL OUTLINE */
 @media (max-width: 768px) {
-  * {
-    outline: 1px solid red !important;
-  }
-  
-  body {
-    background: yellow !important;
-  }
-  
-  .container {
-    background: blue !important;
-  }
-  
-  .main-content {
-    background: green !important;
-  }
-}
-
-@media (max-width: 768px) {
-  body * {
+  .sidebar {
     display: none !important;
   }
 }

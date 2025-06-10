@@ -556,7 +556,7 @@
       if (userActions && !document.getElementById('cart-icon')) {
         const cartIcon = document.createElement('button');
         cartIcon.id = 'cart-icon';
-        cartIcon.innerHTML = `🛒 Cart (<span id="cart-count">0</span>)`;
+        cartIcon.innerHTML = `Cart (<span id="cart-count">0</span>)`;
         cartIcon.onclick = openCart;
         cartIcon.style.cssText = `
           background: var(--cream-panel);

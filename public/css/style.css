@@ -1655,3 +1655,17 @@ height: calc(100vh - 56px);
   }
 }/* Force update */
 /* Force update */
+
+/* Make hamburger menu visible on mobile */
+@media (max-width: 768px) {
+  .hamburger-menu {
+    display: flex !important; /* Show on mobile */
+  }
+}
+
+/* Keep it working on desktop too */
+@media (min-width: 769px) {
+  .hamburger-menu {
+    display: flex; /* Show on desktop */
+  }
+}

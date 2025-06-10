@@ -1698,3 +1698,14 @@ body {
 .main-content, .container {
   background: blue !important;
 }
+
+/* ADD THIS TO YOUR CSS */
+* {
+  max-width: 100vw !important;
+  box-sizing: border-box !important;
+}
+
+.product-grid, .video-grid, .trending-grid {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}

@@ -1665,3 +1665,25 @@ height: calc(100vh - 56px);
     display: flex; /* Show on desktop */
   }
 }
+
+/* TEMPORARY DEBUG - ADD THIS */
+* {
+  outline: 1px solid red !important;
+}
+
+/* Color code elements by width */
+* {
+  position: relative;
+}
+
+*:after {
+  content: attr(class);
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: yellow;
+  color: black;
+  font-size: 10px;
+  padding: 2px;
+  z-index: 9999;
+}

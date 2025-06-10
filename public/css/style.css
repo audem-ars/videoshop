@@ -1685,3 +1685,16 @@ html, body {
   overflow-x: hidden;
   max-width: 100%;
 }
+
+/* TEMPORARY DEBUG - ADD THIS TO FIND THE CULPRIT */
+* {
+  outline: 1px solid red !important;
+}
+
+body {
+  background: yellow !important;
+}
+
+.main-content, .container {
+  background: blue !important;
+}

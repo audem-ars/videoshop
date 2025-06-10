@@ -330,10 +330,58 @@
             <div class="form-group">
               <label for="checkout-country">Country *</label>
               <select id="checkout-country" required>
-                <option value="US">United States</option>
-                <option value="CA">Canada</option>
-                <option value="GB">United Kingdom</option>
-                <option value="AU">Australia</option>
+                <option value="AR">🇦🇷 Argentina</option>
+                <option value="AU">🇦🇺 Australia</option>
+                <option value="AT">🇦🇹 Austria</option>
+                <option value="BE">🇧🇪 Belgium</option>
+                <option value="BR">🇧🇷 Brazil</option>
+                <option value="BG">🇧🇬 Bulgaria</option>
+                <option value="CA">🇨🇦 Canada</option>
+                <option value="CL">🇨🇱 Chile</option>
+                <option value="CN">🇨🇳 China</option>
+                <option value="HR">🇭🇷 Croatia</option>
+                <option value="CZ">🇨🇿 Czech Republic</option>
+                <option value="DK">🇩🇰 Denmark</option>
+                <option value="EG">🇪🇬 Egypt</option>
+                <option value="FI">🇫🇮 Finland</option>
+                <option value="FR">🇫🇷 France</option>
+                <option value="DE">🇩🇪 Germany</option>
+                <option value="GR">🇬🇷 Greece</option>
+                <option value="HK">🇭🇰 Hong Kong</option>
+                <option value="HU">🇭🇺 Hungary</option>
+                <option value="ID">🇮🇩 Indonesia</option>
+                <option value="IN">🇮🇳 India</option>
+                <option value="IE">🇮🇪 Ireland</option>
+                <option value="IL">🇮🇱 Israel</option>
+                <option value="IT">🇮🇹 Italy</option>
+                <option value="JP">🇯🇵 Japan</option>
+                <option value="MY">🇲🇾 Malaysia</option>
+                <option value="MX">🇲🇽 Mexico</option>
+                <option value="NL">🇳🇱 Netherlands</option>
+                <option value="NZ">🇳🇿 New Zealand</option>
+                <option value="NO">🇳🇴 Norway</option>
+                <option value="PH">🇵🇭 Philippines</option>
+                <option value="PL">🇵🇱 Poland</option>
+                <option value="PT">🇵🇹 Portugal</option>
+                <option value="RO">🇷🇴 Romania</option>
+                <option value="RU">🇷🇺 Russia</option>
+                <option value="SA">🇸🇦 Saudi Arabia</option>
+                <option value="SG">🇸🇬 Singapore</option>
+                <option value="SK">🇸🇰 Slovakia</option>
+                <option value="SI">🇸🇮 Slovenia</option>
+                <option value="ZA">🇿🇦 South Africa</option>
+                <option value="KR">🇰🇷 South Korea</option>
+                <option value="ES">🇪🇸 Spain</option>
+                <option value="SE">🇸🇪 Sweden</option>
+                <option value="CH">🇨🇭 Switzerland</option>
+                <option value="TW">🇹🇼 Taiwan</option>
+                <option value="TH">🇹🇭 Thailand</option>
+                <option value="TR">🇹🇷 Turkey</option>
+                <option value="AE">🇦🇪 UAE</option>
+                <option value="UA">🇺🇦 Ukraine</option>
+                <option value="GB">🇬🇧 United Kingdom</option>
+                <option value="US">🇺🇸 United States</option>
+                <option value="VN">🇻🇳 Vietnam</option>
               </select>
             </div>
           </div>
@@ -1354,90 +1402,93 @@
       document.getElementById('checkout-total').textContent = `$${total.toFixed(2)}`;
     }
 
-    // Stripe Checkout
-    async function createStripeSession() {
-      const btn = document.getElementById('stripe-checkout-btn');
-      btn.disabled = true;
-      btn.innerHTML = '⏳ Processing...';
-      
-      try {
-        // Validate form
-        const email = document.getElementById('checkout-email').value;
-        const firstName = document.getElementById('checkout-first-name').value;
-        const lastName = document.getElementById('checkout-last-name').value;
-        const address1 = document.getElementById('checkout-address1').value;
-        const city = document.getElementById('checkout-city').value;
-        const state = document.getElementById('checkout-state').value;
-        const zip = document.getElementById('checkout-zip').value;
-        const country = document.getElementById('checkout-country').value;
-        
-        if (!email || !firstName || !lastName || !address1 || !city || !zip) {
-          alert('Please fill in all required fields');
-          btn.disabled = false;
-          btn.innerHTML = '🔒 Pay Securely with Stripe';
-          return;
-        }
-        
-        // Prepare order data
-        const orderData = {
-          items: cart.map(item => ({
-            productId: item.productId,
-            quantity: item.quantity
-          })),
-          customer: {
-            email: email,
-            name: `${firstName} ${lastName}`,
-            phone: document.getElementById('checkout-phone').value
-          },
-          shippingAddress: {
-            name: `${firstName} ${lastName}`,
-            line1: address1,
-            line2: document.getElementById('checkout-address2').value,
-            city: city,
-            state: state,
-            postal_code: zip,
-            country: country
-          }
-        };
-        
-        console.log('🛒 Creating Stripe session with data:', orderData);
-        
-        // Create checkout session
-        const response = await fetch('/api/checkout/create-session', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(orderData)
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-          console.log('✅ Stripe session created:', result.sessionId);
-          
-          // Redirect to Stripe Checkout
-          const { error } = await stripe.redirectToCheckout({
-            sessionId: result.sessionId
-          });
-          
-          if (error) {
-            console.error('❌ Stripe redirect error:', error);
-            alert('Payment setup failed. Please try again.');
-          }
-        } else {
-          console.error('❌ Session creation failed:', result.error);
-          alert(`Checkout failed: ${result.error}`);
-        }
-        
-      } catch (error) {
-        console.error('❌ Checkout error:', error);
-        alert('Checkout failed. Please try again.');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '🔒 Pay Securely with Stripe';
-      }
+// Your existing function with MINIMAL fixes
+async function createStripeSession() {
+  const btn = document.getElementById('stripe-checkout-btn');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Processing...';
+  
+  try {
+    // Validate form
+    const email = document.getElementById('checkout-email').value.trim(); // ✅ ADD .trim()
+    const firstName = document.getElementById('checkout-first-name').value.trim(); // ✅ ADD .trim()
+    const lastName = document.getElementById('checkout-last-name').value.trim(); // ✅ ADD .trim()
+    const address1 = document.getElementById('checkout-address1').value.trim(); // ✅ ADD .trim()
+    const city = document.getElementById('checkout-city').value.trim(); // ✅ ADD .trim()
+    const state = document.getElementById('checkout-state').value.trim(); // ✅ ADD .trim()
+    const zip = document.getElementById('checkout-zip').value.trim(); // ✅ ADD .trim()
+    const country = document.getElementById('checkout-country').value;
+    
+    if (!email || !firstName || !lastName || !address1 || !city || !zip) {
+      alert('Please fill in all required fields');
+      btn.disabled = false;
+      btn.innerHTML = '🔒 Pay Securely with Stripe';
+      return;
     }
+    
+    // ✅ ADD EMAIL VALIDATION
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert('Please enter a valid email address (e.g., your@email.com)');
+      btn.disabled = false;
+      btn.innerHTML = '🔒 Pay Securely with Stripe';
+      return;
+    }
+    
+    // Prepare order data
+    const orderData = {
+      items: cart.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity
+      })),
+      customer: {
+        email: email,
+        name: `${firstName} ${lastName}`,
+        phone: document.getElementById('checkout-phone').value.trim() // ✅ ADD .trim()
+      },
+      shippingAddress: {
+        name: `${firstName} ${lastName}`,
+        line1: address1,
+        line2: document.getElementById('checkout-address2').value.trim(), // ✅ ADD .trim()
+        city: city,
+        state: state,
+        postal_code: zip,
+        country: country
+      }
+    };
+    
+    console.log('🛒 Creating Stripe session with data:', orderData);
+    
+    // Create checkout session
+    const response = await fetch('/api/checkout/create-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(orderData)
+    });
+    
+    const result = await response.json();
+    
+    if (result.success && result.sessionUrl) {
+      console.log('✅ Redirecting to Stripe Checkout:', result.sessionUrl);
+      
+      // ✅ FIXED: Direct redirect to Stripe Checkout page!
+      window.location.href = result.sessionUrl;
+      
+    } else {
+      console.error('❌ Session creation failed:', result.error);
+      alert(`Checkout failed: ${result.error}`);
+    }
+    
+  } catch (error) {
+    console.error('❌ Checkout error:', error);
+    alert('Checkout failed. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🔒 Pay Securely with Stripe';
+  }
+}
 
     // PRODUCT MODAL FUNCTIONS
     function openProductModal(productId) {

@@ -1709,3 +1709,21 @@ body {
   max-width: 100% !important;
   overflow-x: hidden !important;
 }
+
+/* FIX COMMON GRID ISSUES */
+.product-grid, .video-grid {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+  max-width: 100% !important;
+}
+
+/* FIX FLEXBOX ISSUES */
+.trending-filters, .filter-bar {
+  flex-wrap: wrap !important;
+  max-width: 100% !important;
+}
+
+/* FORCE ALL IMAGES TO BEHAVE */
+img, video, iframe {
+  max-width: 100% !important;
+  height: auto !important;
+}

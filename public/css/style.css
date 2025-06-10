@@ -1671,9 +1671,10 @@ height: calc(100vh - 56px);
 }
 @media (max-width: 768px) {
   .main-content {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
+    width: calc(100vw - 48px) !important; /* Account for padding */
+    max-width: calc(100vw - 48px) !important;
     overflow-x: hidden !important;
+    padding: 24px !important;
+    box-sizing: border-box !important;
   }
 }

@@ -1617,6 +1617,7 @@ height: calc(100vh - 56px);
   }
   
   .main-content {
+    min-width: calc(100vw - 250px) !important; /* Account for sidebar */
     overflow-x: auto !important;
   }
   
@@ -1632,16 +1633,19 @@ height: calc(100vh - 56px);
   
   /* Prevent product grid from stacking too narrow */
   .product-grid {
+    min-width: 600px !important; /* Force wider grid */
     grid-template-columns: repeat(3, 1fr) !important; /* 3 columns minimum */
   }
   
   /* Video grid also wider */
   .video-grid {
+    min-width: 500px !important;
     grid-template-columns: repeat(2, 1fr) !important;
   }
   
   /* Featured video maintains aspect ratio */
   .featured-video {
+    min-width: 400px !important;
   }
   
   /* Modals should still be responsive */
@@ -1666,24 +1670,21 @@ height: calc(100vh - 56px);
   }
 }
 
-/* TEMPORARY DEBUG - ADD THIS */
-* {
-  outline: 1px solid red !important;
-}
-
-/* Color code elements by width */
-* {
-  position: relative;
-}
-
-*:after {
-  content: attr(class);
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: yellow;
-  color: black;
-  font-size: 10px;
-  padding: 2px;
-  z-index: 9999;
+/* MOBILE DEBUG - VISUAL OUTLINE */
+@media (max-width: 768px) {
+  * {
+    outline: 1px solid red !important;
+  }
+  
+  body {
+    background: yellow !important;
+  }
+  
+  .container {
+    background: blue !important;
+  }
+  
+  .main-content {
+    background: green !important;
+  }
 }

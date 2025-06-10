@@ -131,7 +131,7 @@
           </div>
           
           <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px;">
-            <button class="subscribe-btn game-btn" id="startBtn" onclick="startGame()" style="padding: 15px 30px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1rem;">🚀 START</button>
+            <button class="subscribe-btn game-btn" id="startBtn" onclick="startGame()" ontouchstart="startGame()" style="padding: 15px 30px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1rem;">🚀 START</button>
             <button class="subscribe-btn game-btn" onclick="pauseGame()" id="pauseBtn" style="padding: 15px 30px; background: linear-gradient(135deg, #FF9800, #f57f17); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1rem;">⏸️ PAUSE</button>
             <button class="subscribe-btn game-btn" onclick="resetGame()" style="padding: 15px 30px; background: linear-gradient(135deg, #f44336, #d32f2f); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1rem;">🔄 RESET</button>
           </div>
@@ -318,6 +318,20 @@
   <script src="/js/subtle-effect.js"></script>
   
   <script>
+    function openModal(modalId) {
+  document.getElementById(modalId).style.display = 'flex';
+  document.body.classList.add('modal-open');
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).style.display = 'none';
+  document.body.classList.remove('modal-open');
+}
+
+function switchModal(closeId, openId) {
+  closeModal(closeId);
+  openModal(openId);
+}
     // SIMPLE KIRBY FLAPPY GAME - FRESH START! 🎮
     
     // Simple game variables
@@ -378,6 +392,79 @@
       ctx.textAlign = 'left';
     }
     
+    // ADD THESE MISSING FUNCTIONS:
+
+function saveBestScore() {
+  localStorage.setItem('kirbyBestScore', bestScore);
+}
+
+function loadBestScore() {
+  const saved = localStorage.getItem('kirbyBestScore');
+  if (saved) {
+    bestScore = parseInt(saved);
+  }
+}
+
+function flap() {
+  if (gameRunning) {
+    player.velocityY = player.flapPower;
+  }
+}
+
+function setupControls() {
+  // Keyboard controls - SPACEBAR!
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+      e.preventDefault();
+      flap();
+    }
+  });
+  
+  // Touch controls for mobile
+  canvas.addEventListener('click', flap);
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    flap();
+  });
+  
+  // Mobile button
+  const flapBtn = document.getElementById('flapBtn');
+  if (flapBtn) {
+    flapBtn.addEventListener('click', flap);
+    flapBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      flap();
+    });
+  }
+}
+
+function getOrdinal(num) {
+  const suffixes = ["th", "st", "nd", "rd"];
+  const value = num % 100;
+  return num + (suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0]);
+}
+
+function updateMonthTimer() {
+  const now = new Date();
+  const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const timeLeft = nextMonth - now;
+  
+  const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+  
+  const timerElement = document.getElementById('monthTimer');
+  if (timerElement) {
+    timerElement.textContent = `${days.toString().padStart(2, '0')}:${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+}
+
+function toggleLeaderboard() {
+  // Simple toggle function for leaderboard
+  console.log('Leaderboard toggled');
+}
+    
     function startGame() {
       if (gameRunning) return;
       
@@ -400,6 +487,14 @@
       
       gameLoop();
     }
+
+    function updateUI() {
+  document.getElementById('gameScore').textContent = score;
+  document.getElementById('gameSpeed').textContent = gameSpeed.toFixed(1) + 'x';
+  document.getElementById('score-display').textContent = score;
+  document.getElementById('speed-display').textContent = gameSpeed.toFixed(1) + 'x';
+  document.getElementById('best-score-display').textContent = bestScore;
+}
     
     function pauseGame() {
       gameRunning = !gameRunning;

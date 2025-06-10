@@ -1688,3 +1688,9 @@ height: calc(100vh - 56px);
     background: green !important;
   }
 }
+
+@media (max-width: 768px) {
+  body * {
+    display: none !important;
+  }
+}

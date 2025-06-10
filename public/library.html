@@ -609,204 +609,205 @@
       updateUI();
     }
     
-    // MONTHLY LEADERBOARD SYSTEM
-    function submitScoreToLeaderboard(playerName, playerScore) {
-      // Get current month key
-      const now = new Date();
-      const monthKey = `${now.getFullYear()}-${now.getMonth()}`;
-      
-      // Load monthly leaderboard
-      let monthlyData = JSON.parse(localStorage.getItem('monthlyLeaderboard_' + monthKey) || '[]');
-      
-      // Find existing player or add new one
-      let existingPlayer = monthlyData.find(p => p.name === playerName);
-      
-      if (existingPlayer) {
-        // Update if this is a better score
-        if (playerScore > existingPlayer.score) {
-          existingPlayer.score = playerScore;
-          existingPlayer.date = now.toISOString();
-        }
-      } else {
-        // Add new player
-        monthlyData.push({
-          name: playerName,
-          score: playerScore,
-          date: now.toISOString()
-        });
-      }
-      
-      // Sort by score (highest first) and keep top 10
-      monthlyData.sort((a, b) => b.score - a.score);
-      monthlyData = monthlyData.slice(0, 10);
-      
-      // Save back to localStorage
-      localStorage.setItem('monthlyLeaderboard_' + monthKey, JSON.stringify(monthlyData));
-      
-      // Update display
-      updateLeaderboardDisplay(monthlyData);
-    }
+    // MONTHLY LEADERBOARD SYSTEM - NOW USING MONGODB!
+async function submitScoreToLeaderboard(playerName, playerScore) {
+  if (!playerName || !playerScore) return;
+  
+  try {
+    const gameSession = {
+      duration: Math.floor((Date.now() - gameStartTime) / 1000), // Game duration in seconds
+      itemsCollected: Math.floor(playerScore / 100), // Assuming 100 points per present
+      gameSpeed: gameSpeed,
+      timestamp: new Date()
+    };
     
-    function loadMonthlyLeaderboard() {
-      const now = new Date();
-      const monthKey = `${now.getFullYear()}-${now.getMonth()}`;
-      const monthlyData = JSON.parse(localStorage.getItem('monthlyLeaderboard_' + monthKey) || '[]');
-      updateLeaderboardDisplay(monthlyData);
-    }
-    
-    function updateLeaderboardDisplay(leaderboardData) {
-      // Update top 10 slots with compact format
-      for (let i = 1; i <= 10; i++) {
-        const player = leaderboardData[i - 1];
-        const nameElement = document.getElementById(`leader${i}Name`);
-        const scoreElement = document.getElementById(`leader${i}Score`);
-        
-        if (player) {
-          nameElement.textContent = player.name;
-          if (i <= 3) {
-            // Top 3 get more detailed display
-            scoreElement.textContent = `${player.score.toLocaleString()} pts`;
-          } else {
-            // 4-10 get compact display
-            scoreElement.textContent = ` - ${player.score.toLocaleString()}`;
-          }
-        } else {
-          nameElement.textContent = i <= 3 ? getOrdinal(i) + ' Place' : getOrdinal(i);
-          scoreElement.textContent = i <= 3 ? '0 pts' : ' - 0';
-        }
-      }
-    }
-    
-    // Add toggle function for leaderboard
-    function toggleLeaderboard() {
-      const leaderboard = document.querySelector('.monthly-leaderboard');
-      const content = document.getElementById('leaderboardContent');
-      
-      if (content.style.display === 'none') {
-        content.style.display = 'block';
-        leaderboard.style.height = 'auto';
-      } else {
-        content.style.display = 'none';
-        leaderboard.style.height = '60px';
-      }
-    }
-    
-    function getOrdinal(number) {
-      const ordinals = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'];
-      return ordinals[number] || `${number}th`;
-    }
-    
-    function updateMonthTimer() {
-      const now = new Date();
-      const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-      const timeLeft = nextMonth - now;
-      
-      if (timeLeft <= 0) {
-        // Month ended - could trigger winner announcement here
-        document.getElementById('monthTimer').textContent = '00:00:00:00';
-        return;
-      }
-      
-      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-      
-      document.getElementById('monthTimer').textContent = 
-        `${days.toString().padStart(2, '0')}:${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-    
-    function updateUI() {
-      document.getElementById('gameScore').textContent = score;
-      document.getElementById('gameSpeed').textContent = gameSpeed.toFixed(1) + 'x';
-      document.getElementById('score-display').textContent = score;
-      document.getElementById('speed-display').textContent = gameSpeed.toFixed(1) + 'x';
-      document.getElementById('best-score-display').textContent = bestScore;
-    }
-    
-    function flap() {
-      if (gameRunning) {
-        player.velocityY = player.flapPower;
-      }
-    }
-    
-    function setupControls() {
-      // Keyboard
-      document.addEventListener('keydown', (e) => {
-        if (e.code === 'Space') {
-          e.preventDefault();
-          flap();
-        }
-      });
-      
-      // Touch
-      canvas.addEventListener('click', flap);
-      canvas.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        flap();
-      });
-      
-      // Mobile button
-      document.getElementById('flapBtn').addEventListener('click', flap);
-    }
-    
-    function saveBestScore() {
-      localStorage.setItem('kirbyBestScore', bestScore);
-    }
-    
-    function loadBestScore() {
-      const saved = localStorage.getItem('kirbyBestScore');
-      if (saved) {
-        bestScore = parseInt(saved);
-        updateUI();
-      }
-    }
-    
-    // Modal functions - WORKING SIGNIN!
-    function openModal(modalId) {
-      document.getElementById(modalId).style.display = 'flex';
-      document.body.classList.add('modal-open');
-    }
-    
-    function closeModal(modalId) {
-      document.getElementById(modalId).style.display = 'none';
-      document.body.classList.remove('modal-open');
-    }
-    
-    function switchModal(closeId, openId) {
-      closeModal(closeId);
-      openModal(openId);
-    }
-    
-    // Handle login form submission
-    document.getElementById('login-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      
-      // Simple validation
-      if (email && password) {
-        // Set current user
-        currentUser = {
-          name: email.split('@')[0],
-          email: email
-        };
-        
-        // Show success message
-        alert('Login successful! Welcome to Kirby Wings! Your scores now count for the monthly leaderboard!');
-        closeModal('login-modal');
-        
-        // Update sign-in button to show user is logged in
-        document.querySelector('.sign-in').textContent = 'Welcome, ' + currentUser.name + '!';
-        document.querySelector('.sign-in').onclick = null;
-        document.querySelector('.sign-in').style.color = '#4CAF50';
-        
-        // Clear form
-        document.getElementById('login-form').reset();
-      } else {
-        alert('Please enter both email and password');
-      }
+    const response = await fetch('/api/leaderboard/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        playerName: playerName,
+        playerEmail: currentUser.email,
+        score: playerScore,
+        gameSession: gameSession
+      })
     });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      console.log('✅ Score submitted to global leaderboard!');
+      
+      // Update leaderboard display with fresh data
+      updateLeaderboardDisplay(result.leaderboard);
+      
+      // Show rank feedback
+      if (result.isNewBest && result.playerRank) {
+        document.getElementById('gameStatus').textContent += ` | Rank #${result.playerRank}!`;
+      }
+    } else {
+      console.error('❌ Failed to submit score:', result.error);
+    }
+    
+  } catch (error) {
+    console.error('❌ Error submitting score to leaderboard:', error);
+  }
+}
+
+async function loadMonthlyLeaderboard() {
+  try {
+    const response = await fetch('/api/leaderboard/monthly?limit=10');
+    const result = await response.json();
+    
+    if (result.success) {
+      updateLeaderboardDisplay(result.leaderboard);
+      
+      // Update month display
+      const monthTimer = document.getElementById('monthTimer');
+      if (monthTimer && result.month) {
+        // Keep the existing countdown timer but could add month name somewhere
+      }
+    } else {
+      console.error('❌ Failed to load leaderboard:', result.error);
+      // Fallback to empty leaderboard
+      updateLeaderboardDisplay([]);
+    }
+    
+  } catch (error) {
+    console.error('❌ Error loading leaderboard:', error);
+    // Fallback to empty leaderboard
+    updateLeaderboardDisplay([]);
+  }
+}
+
+function updateLeaderboardDisplay(leaderboardData) {
+  // Update top 10 slots with REAL GLOBAL DATA
+  for (let i = 1; i <= 10; i++) {
+    const player = leaderboardData[i - 1];
+    const nameElement = document.getElementById(`leader${i}Name`);
+    const scoreElement = document.getElementById(`leader${i}Score`);
+    
+    if (player) {
+      nameElement.textContent = player.playerName;
+      if (i <= 3) {
+        // Top 3 get more detailed display
+        scoreElement.textContent = `${player.bestScore.toLocaleString()} pts`;
+      } else {
+        // 4-10 get compact display
+        scoreElement.textContent = ` - ${player.bestScore.toLocaleString()}`;
+      }
+      
+      // Highlight current user if they're on the leaderboard
+      if (currentUser && player._id === currentUser.email) {
+        nameElement.style.color = '#4CAF50';
+        nameElement.textContent += ' (You!)';
+      }
+    } else {
+      nameElement.textContent = i <= 3 ? getOrdinal(i) + ' Place' : getOrdinal(i);
+      scoreElement.textContent = i <= 3 ? '0 pts' : ' - 0';
+      nameElement.style.color = ''; // Reset color
+    }
+  }
+}
+
+// ADD this variable to track game start time (add near the top with other variables)
+let gameStartTime = 0;
+
+// UPDATE your startGame function to track start time:
+function startGame() {
+  if (gameRunning) return;
+  
+  gameRunning = true;
+  score = 0;
+  gameSpeed = 2;
+  gameStartTime = Date.now(); // Track when game started
+  
+  // Reset player
+  player.x = 100;
+  player.y = 200;
+  player.velocityY = 0;
+  
+  // Clear arrays
+  presents = [];
+  xMarks = [];
+  lastSpawnTime = 0;
+  
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('gameStatus').textContent = 'Flying! Keep flapping!';
+  
+  gameLoop();
+}
+
+// UPDATE your gameOver function:
+function gameOver() {
+  gameRunning = false;
+  
+  // Submit score to GLOBAL leaderboard if user is logged in
+  if (currentUser && score > 0) {
+    submitScoreToLeaderboard(currentUser.name, score);
+  }
+  
+  if (score > bestScore) {
+    bestScore = score;
+    saveBestScore();
+    document.getElementById('gameStatus').textContent = `NEW BEST SCORE: ${score}!`;
+  } else {
+    document.getElementById('gameStatus').textContent = `Game Over! Score: ${score}`;
+  }
+  
+  document.getElementById('startBtn').disabled = false;
+  document.getElementById('pauseBtn').textContent = '⏸️ PAUSE';
+  
+  updateUI();
+}
+
+// ENHANCED login success to load player's rank
+document.getElementById('login-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  
+  // Simple validation
+  if (email && password) {
+    // Set current user
+    currentUser = {
+      name: email.split('@')[0],
+      email: email
+    };
+    
+    // Load player's current rank and best score
+    try {
+      const response = await fetch(`/api/leaderboard/player/${encodeURIComponent(email)}`);
+      const playerData = await response.json();
+      
+      if (playerData.success && playerData.hasPlayed) {
+        const rankText = playerData.rank ? ` (Rank #${playerData.rank})` : '';
+        alert(`Welcome back! Your best score this month: ${playerData.bestScore}${rankText}`);
+      } else {
+        alert('Welcome! Play the game to join the monthly leaderboard competition!');
+      }
+    } catch (error) {
+      console.log('Could not load player data, but login successful');
+      alert('Welcome! Your scores will now count for the monthly leaderboard!');
+    }
+    
+    closeModal('login-modal');
+    
+    // Update sign-in button
+    document.querySelector('.sign-in').textContent = 'Welcome, ' + currentUser.name + '!';
+    document.querySelector('.sign-in').onclick = null;
+    document.querySelector('.sign-in').style.color = '#4CAF50';
+    
+    // Reload leaderboard to highlight user if they're on it
+    loadMonthlyLeaderboard();
+    
+    // Clear form
+    document.getElementById('login-form').reset();
+  } else {
+    alert('Please enter both email and password');
+  }
+});
     
     // Handle signup form submission
     document.getElementById('signup-form').addEventListener('submit', function(e) {

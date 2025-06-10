@@ -3,6 +3,21 @@
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize hamburger menu ONLY
   initHamburgerMenu();
+
+  window.openModal = function(modalId) {
+    document.getElementById(modalId).style.display = 'flex';
+    document.body.classList.add('modal-open');
+  };
+  
+  window.closeModal = function(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+    document.body.classList.remove('modal-open');
+  };
+  
+  window.switchModal = function(closeId, openId) {
+    closeModal(closeId);
+    openModal(openId);
+  };
   
   // Upload button functionality
   const uploadButton = document.getElementById('upload-btn');

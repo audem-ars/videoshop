@@ -1617,7 +1617,6 @@ height: calc(100vh - 56px);
   }
   
   .main-content {
-    min-width: calc(100vw - 250px) !important; /* Account for sidebar */
     overflow-x: auto !important;
   }
   
@@ -1633,19 +1632,16 @@ height: calc(100vh - 56px);
   
   /* Prevent product grid from stacking too narrow */
   .product-grid {
-    min-width: 600px !important; /* Force wider grid */
     grid-template-columns: repeat(3, 1fr) !important; /* 3 columns minimum */
   }
   
   /* Video grid also wider */
   .video-grid {
-    min-width: 500px !important;
     grid-template-columns: repeat(2, 1fr) !important;
   }
   
   /* Featured video maintains aspect ratio */
   .featured-video {
-    min-width: 400px !important;
   }
   
   /* Modals should still be responsive */
@@ -1668,62 +1664,4 @@ height: calc(100vh - 56px);
   .hamburger-menu {
     display: flex; /* Show on desktop */
   }
-}
-
-/* EMERGENCY MOBILE FIX */
-html, body {
-  overflow-x: hidden;
-  max-width: 100vw;
-}
-
-* {
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-.container, .main-content {
-  overflow-x: hidden;
-  max-width: 100%;
-}
-
-/* TEMPORARY DEBUG - ADD THIS TO FIND THE CULPRIT */
-* {
-  outline: 1px solid red !important;
-}
-
-body {
-  background: yellow !important;
-}
-
-.main-content, .container {
-  background: blue !important;
-}
-
-/* ADD THIS TO YOUR CSS */
-* {
-  max-width: 100vw !important;
-  box-sizing: border-box !important;
-}
-
-.product-grid, .video-grid, .trending-grid {
-  max-width: 100% !important;
-  overflow-x: hidden !important;
-}
-
-/* FIX COMMON GRID ISSUES */
-.product-grid, .video-grid {
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
-  max-width: 100% !important;
-}
-
-/* FIX FLEXBOX ISSUES */
-.trending-filters, .filter-bar {
-  flex-wrap: wrap !important;
-  max-width: 100% !important;
-}
-
-/* FORCE ALL IMAGES TO BEHAVE */
-img, video, iframe {
-  max-width: 100% !important;
-  height: auto !important;
 }

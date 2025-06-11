@@ -1622,3 +1622,16 @@ height: calc(100vh - 56px);
     width: 100% !important;
   }
 }
+@media (max-width: 768px) {
+  .featured-video {
+    outline: 5px solid red !important;
+  }
+  
+  .shop-section {
+    outline: 5px solid blue !important;
+  }
+  
+  .main-content {
+    outline: 5px solid green !important;
+  }
+}

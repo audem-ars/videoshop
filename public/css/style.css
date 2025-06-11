@@ -1669,3 +1669,8 @@ height: calc(100vh - 56px);
     display: flex; /* Show on desktop */
   }
 }
+@media (max-width: 768px) {
+  .featured-video, .shop-section {
+    display: none !important;
+  }
+}

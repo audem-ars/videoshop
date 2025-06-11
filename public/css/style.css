@@ -1670,7 +1670,7 @@ height: calc(100vh - 56px);
   }
 }
 @media (max-width: 768px) {
-  .filter-bar, .sort-buttons {
+  table, .comparison-table {
     display: none !important;
   }
 }

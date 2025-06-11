@@ -1682,3 +1682,8 @@ height: calc(100vh - 56px);
     flex-direction: column !important;
   }
 }
+@media (max-width: 768px) {
+  .featured-video, .shop-section, .trending-header, .bulk-calculator, .AI-assistant {
+    display: none !important;
+  }
+}

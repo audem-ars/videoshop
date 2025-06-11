@@ -1622,19 +1622,3 @@ height: calc(100vh - 56px);
     width: 100% !important;
   }
 }
-@media (max-width: 768px) {
-  .featured-video {
-    width: 65% !important;
-    max-width: 65% !important;
-  }
-  
-  .shop-section {
-    width: 30% !important;
-    max-width: 30% !important;
-  }
-  
-  .main-content {
-    box-sizing: border-box !important;
-    overflow-x: hidden !important;
-  }
-}

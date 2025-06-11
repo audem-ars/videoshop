@@ -1622,18 +1622,3 @@ height: calc(100vh - 56px);
     width: 100% !important;
   }
 }
-@media (max-width: 768px) {
-  html {
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: clip !important;
-  }
-  
-  body {
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: clip !important;
-  }
-}

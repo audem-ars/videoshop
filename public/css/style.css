@@ -276,12 +276,11 @@ header {
   visibility: visible;
 }
 
-/* Adjust main content when sidebar is hidden */
 .main-content {
   flex: 1;
   padding: 24px;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;  /* ← CHANGE TO NOWRAP */
   gap: 0px;
   margin-left: 0;
   transition: margin-left 0.3s cubic-bezier(0.22, 1, 0.36, 1);
@@ -1620,12 +1619,5 @@ height: calc(100vh - 56px);
   .featured-video,
   .shop-section {
     width: 100% !important;
-  }
-}
-@media (max-width: 768px) {
-  html, body {
-    transform: translateX(0) !important;
-    contain: layout style !important;
-    isolation: isolate !important;
   }
 }

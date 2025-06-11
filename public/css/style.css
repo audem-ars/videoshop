@@ -276,10 +276,15 @@ header {
   visibility: visible;
 }
 
-@media (max-width: 768px) {
-  .main-content {
-    flex-wrap: nowrap !important;
-  }
+/* Adjust main content when sidebar is hidden */
+.main-content {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0px;
+  margin-left: 0;
+  transition: margin-left 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .sidebar-item {

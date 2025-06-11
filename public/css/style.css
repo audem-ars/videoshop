@@ -1669,14 +1669,28 @@ height: calc(100vh - 56px);
     display: flex; /* Show on desktop */
   }
 }
+
+/* MOBILE OVERSCROLL FIX - NUCLEAR STRENGTH */
 @media (max-width: 768px) {
-  .main-content {
+  body .container .main-content {
     flex-direction: column !important;
     padding: 12px !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
   }
   
-  .featured-video,
-  .shop-section {
+  body .main-content .featured-video,
+  body .main-content .shop-section {
     width: 100% !important;
+    max-width: 100% !important;
+    flex: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    background: red !important;
+    border: 5px solid yellow !important;
   }
 }

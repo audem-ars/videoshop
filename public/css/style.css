@@ -1622,3 +1622,12 @@ height: calc(100vh - 56px);
     width: 100% !important;
   }
 }
+@media (max-width: 768px) {
+  html {
+    overflow-x: clip !important;
+  }
+  
+  body {
+    overflow-x: clip !important;
+  }
+}

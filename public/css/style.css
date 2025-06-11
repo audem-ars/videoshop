@@ -1671,16 +1671,15 @@ height: calc(100vh - 56px);
 }
 @media (max-width: 768px) {
   .main-content {
-    flex-direction: column !important;
-    width: 100% !important;
-    max-width: 100vw !important;
-    padding: 12px !important;
+    padding: 8px !important;
     box-sizing: border-box !important;
   }
   
-  .featured-video,
+  .featured-video {
+    width: calc(65% - 8px) !important;
+  }
+  
   .shop-section {
-    width: 100% !important;
-    max-width: 100% !important;
+    width: calc(30% - 8px) !important;
   }
 }

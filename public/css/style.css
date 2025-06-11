@@ -1671,15 +1671,12 @@ height: calc(100vh - 56px);
 }
 @media (max-width: 768px) {
   .main-content {
-    padding: 8px !important;
-    box-sizing: border-box !important;
+    flex-direction: column !important;
+    padding: 12px !important;
   }
   
-  .featured-video {
-    width: calc(65% - 8px) !important;
-  }
-  
+  .featured-video,
   .shop-section {
-    width: calc(30% - 8px) !important;
+    width: 100% !important;
   }
 }

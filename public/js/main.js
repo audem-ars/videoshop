@@ -187,3 +187,21 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+// Add this to your main.js or in a script tag
+document.addEventListener('scroll', function() {
+  const maxScrollLeft = document.documentElement.scrollWidth - window.innerWidth;
+  
+  if (window.scrollX > maxScrollLeft) {
+    window.scrollTo(maxScrollLeft, window.scrollY);
+  }
+});
+
+// Also prevent touch/drag scrolling into phantom area
+document.addEventListener('touchmove', function(e) {
+  const maxScrollLeft = document.documentElement.scrollWidth - window.innerWidth;
+  
+  if (window.scrollX > maxScrollLeft) {
+    e.preventDefault();
+    window.scrollTo(maxScrollLeft, window.scrollY);
+  }
+});

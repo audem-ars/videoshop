@@ -1622,8 +1622,3 @@ height: calc(100vh - 56px);
     width: 100% !important;
   }
 }
-@media (max-width: 768px) {
-  * {
-    flex-wrap: nowrap !important;
-  }
-}

@@ -44,8 +44,4 @@ document.addEventListener('DOMContentLoaded', function() {
   // REMOVE ANY EXISTING PHANTOM ELEMENTS
   const phantomElements = document.querySelectorAll('.ambient-background, .glow-element, .background-panel');
   phantomElements.forEach(el => el.remove());
-  
-  // PREVENT ANY OVERFLOW
-  document.body.style.overflowX = 'hidden';
-  document.documentElement.style.overflowX = 'hidden';
 });

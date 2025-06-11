@@ -1670,7 +1670,15 @@ height: calc(100vh - 56px);
   }
 }
 @media (max-width: 768px) {
+  .featured-video {
+    width: 100% !important;
+  }
+  
   .shop-section {
-    display: none !important;
+    width: 100% !important;
+  }
+  
+  .main-content {
+    flex-direction: column !important;
   }
 }

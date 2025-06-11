@@ -1676,10 +1676,10 @@ height: calc(100vh - 56px);
   }
   
   .featured-video {
-    width: 64% !important;
+    width: 50% !important;
   }
   
   .shop-section {
-    width: 34% !important; /* 64% + 34% = 98% */
+    width: 20% !important; /* 64% + 34% = 98% */
   }
 }

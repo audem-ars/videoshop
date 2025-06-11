@@ -1622,3 +1622,10 @@ height: calc(100vh - 56px);
     width: 100% !important;
   }
 }
+@media (max-width: 768px) {
+  html, body {
+    transform: translateX(0) !important;
+    contain: layout style !important;
+    isolation: isolate !important;
+  }
+}

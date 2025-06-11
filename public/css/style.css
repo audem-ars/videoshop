@@ -276,14 +276,10 @@ header {
   visibility: visible;
 }
 
-.main-content {
-  flex: 1;
-  padding: 24px;
-  display: flex;
-  flex-wrap: nowrap;  /* ← CHANGE TO NOWRAP */
-  gap: 0px;
-  margin-left: 0;
-  transition: margin-left 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+@media (max-width: 768px) {
+  .main-content {
+    flex-wrap: nowrap !important;
+  }
 }
 
 .sidebar-item {

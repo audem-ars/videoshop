@@ -1599,63 +1599,6 @@ height: calc(100vh - 56px);
 }
 }
 
-/* Mobile Horizontal Scroll Fix - Add to end of style.css */
-
-@media (max-width: 768px) {
-  /* Allow horizontal scrolling on mobile */
-  html, body {
-    overflow-x: auto !important; /* Enable horizontal scroll */
-    overflow-y: auto !important; /* Keep vertical scroll */
-    width: auto !important; /* Don't constrain width */
-    min-width: 100vw; /* Minimum full viewport width */
-  }
-  
-  /* Don't force containers to be narrow */
-  .container {
-    min-width: 100vw !important; /* Allow full width */
-    overflow-x: auto !important;
-  }
-  
-  .main-content {
-    min-width: calc(100vw - 250px) !important; /* Account for sidebar */
-    overflow-x: auto !important;
-  }
-  
-  /* Fix floating panels to not overlap */
-  .monthly-leaderboard {
-    position: relative !important; /* Not fixed */
-    top: auto !important;
-    right: auto !important;
-    margin-bottom: 20px !important;
-    width: 100% !important;
-    max-width: 320px !important;
-  }
-  
-  /* Prevent product grid from stacking too narrow */
-  .product-grid {
-    min-width: 600px !important; /* Force wider grid */
-    grid-template-columns: repeat(3, 1fr) !important; /* 3 columns minimum */
-  }
-  
-  /* Video grid also wider */
-  .video-grid {
-    min-width: 500px !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-  
-  /* Featured video maintains aspect ratio */
-  .featured-video {
-    min-width: 400px !important;
-  }
-  
-  /* Modals should still be responsive */
-  .modal-content {
-    max-width: 90vw !important;
-    margin: 20px auto !important;
-  }
-}/* Force update */
-/* Force update */
-
 /* Make hamburger menu visible on mobile */
 @media (max-width: 768px) {
   .hamburger-menu {

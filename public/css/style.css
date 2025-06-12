@@ -1530,7 +1530,7 @@ height: calc(100vh - 56px);
 
 @media (max-width: 768px) {
   .product-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)); /* ← FIXED */
+    grid-template-columns: repeat(1, 1fr) !important;
   }
 
   .video-grid {

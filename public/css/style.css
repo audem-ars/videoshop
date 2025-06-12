@@ -1641,7 +1641,5 @@ height: calc(100vh - 56px);
   .featured-video,
   .shop-section {
     width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: hidden !important;
   }
 }

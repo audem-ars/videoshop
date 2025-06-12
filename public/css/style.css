@@ -361,7 +361,6 @@ header {
 
 /* Enhanced Featured Video */
 .featured-video {
-  width: 65%;
   position: relative;
   border-radius: 12px;
   overflow: hidden;

@@ -1613,27 +1613,6 @@ height: calc(100vh - 56px);
   }
 }
 @media (max-width: 768px) {
-  html {
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
-  }
-  
-  body {
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
-  }
-  
-  .container {
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
-  }
-  
-  .main-content {
-    flex-direction: column !important;
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-  }
   .main-content {
     flex-direction: column !important;
   }

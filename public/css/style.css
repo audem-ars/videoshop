@@ -1622,3 +1622,22 @@ height: calc(100vh - 56px);
     width: 100% !important;
   }
 }
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column !important;
+  }
+  
+  .featured-video,
+  .shop-section {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  .product-grid {
+    grid-template-columns: 1fr !important; /* Single column */
+  }
+  
+  .video-grid {
+    grid-template-columns: 1fr !important; /* Single column */
+  }
+}

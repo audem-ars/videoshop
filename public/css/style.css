@@ -1622,12 +1622,3 @@ height: calc(100vh - 56px);
     width: 100% !important;
   }
 }
-.main-content {
-  min-width: 0 !important;
-}
-
-.featured-video,
-.shop-section {
-  min-width: 0 !important;
-  flex-shrink: 1 !important;
-}

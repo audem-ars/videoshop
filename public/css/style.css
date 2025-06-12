@@ -1528,20 +1528,6 @@ height: calc(100vh - 56px);
 }
 }
 
-@media (max-width: 576px) {
-.search-bar {
-  display: none;
-}
-
-.main-content {
-  padding: 16px;
-}
-
-.video-actions {
-  flex-wrap: wrap;
-}
-}
-
 /* Make hamburger menu visible on mobile */
 @media (max-width: 768px) {
   .hamburger-menu {

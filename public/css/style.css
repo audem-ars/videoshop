@@ -1615,7 +1615,7 @@ height: calc(100vh - 56px);
 @media (max-width: 768px) {
   .main-content {
     flex-direction: column !important;
-    flex-wrap: nowrap !important;
+    min-width: 0 !important;
   }
   
   .featured-video,

@@ -1615,12 +1615,11 @@ height: calc(100vh - 56px);
 @media (max-width: 768px) {
   .main-content {
     flex-direction: column !important;
-    min-width: 0 !important;
+    flex-wrap: nowrap !important;
   }
   
   .featured-video,
   .shop-section {
     width: 100% !important;
-    min-width: 0 !important;
   }
 }
